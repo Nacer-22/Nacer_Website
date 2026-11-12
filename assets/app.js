@@ -9,6 +9,9 @@
   let busy = false;
 
   async function api(path, options = {}) {
+    if (!apiBase && location.hostname.endsWith("github.io")) {
+      throw new Error("واجهة الموقع جاهزة، لكن خادم HAX_RESELLER لم يُربط بعد. اضبط API_BASE_URL في assets/config.js.");
+    }
     const headers = new Headers(options.headers || {});
     if (options.body && !headers.has("Content-Type")) headers.set("Content-Type", "application/json");
     if (token) headers.set("Authorization", "Bearer " + token);
