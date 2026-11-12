@@ -1,0 +1,10 @@
+{
+  "name": "HAX_NON_ROOT",
+  "owner": "Nacer_22",
+  "version": 1,
+  "description": "HAX_NON_ROOT public configuration manifest",
+  "config_file": "Nacer.json",
+  "subscription_url": "",
+  "updated_at": null,
+  "status": "template-awaiting-connection-details"
+}
