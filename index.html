@@ -1,537 +1,107 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HAX_NON_ROOT | Secure Reseller</title>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Orbitron:wght@600;800;900&display=swap" rel="stylesheet">
-<style>
-:root {
---bg-dark: #030407;
---card-bg: #0A0D14;
---card-border: rgba(229, 9, 20, 0.25);
---accent-blue: #E50914;
---accent-glow: #FF4D5A;
---text-white: #ffffff;
---text-muted: #78909C;
---danger-red: #FF1744;
---success-green: #00E676;
---neon-glow: 0 0 15px rgba(229, 9, 20, 0.4);
---neon-green-glow: 0 0 15px rgba(0, 230, 118, 0.4);
---neon-red-glow: 0 0 15px rgba(255, 23, 68, 0.5);
-}
-* { box-sizing: border-box; font-family: 'Cairo', sans-serif; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-body {
-background: radial-gradient(circle at center, #180609 0%, var(--bg-dark) 100%);
-color: var(--text-white);
-min-height: 100vh;
-padding: 20px 15px;
-display: flex;
-justify-content: center;
-align-items: flex-start;
-}
-.dashboard-container {
-width: 100%;
-max-width: 500px;
-display: flex;
-flex-direction: column;
-gap: 16px;
-}
-.header-bar {
-display: flex;
-justify-content: space-between;
-align-items: center;
-margin-bottom: 8px;
-}
-.brand-logo-container {
-display: flex;
-justify-content: space-between;
-align-items: center;
-width: 100%;
-margin-bottom: 25px;
-padding: 0 5px;
-}
-.brand-logo {
-font-family: 'Orbitron', sans-serif;
-font-size: 1.6rem;
-font-weight: 900;
-letter-spacing: 1.5px;
-font-style: italic;
-line-height: 1.1;
-color: #fff;
-text-shadow: 0 0 10px rgba(229, 9, 20, 0.5);
-}
-.brand-logo span { display: block; font-size: 0.75rem; color: var(--accent-glow); letter-spacing: 3px; font-style: normal; margin-top: 2px; text-shadow: 0 0 8px var(--accent-glow); }
-.top-pill-btn {
-background: rgba(229, 9, 20, 0.15);
-border: 1px solid var(--accent-glow);
-color: var(--accent-glow);
-padding: 6px 14px;
-border-radius: 20px;
-font-size: 0.75rem;
-font-weight: 700;
-cursor: pointer;
-text-transform: uppercase;
-letter-spacing: 1px;
-display: inline-flex;
-align-items: center;
-justify-content: center;
-gap: 6px;
-box-shadow: var(--neon-glow);
-transition: 0.2s;
-}
-.top-pill-btn:hover { background: rgba(229, 9, 20, 0.3); }
-.nav-btns { display: flex; gap: 8px; }
-.nav-btn {
-background: rgba(10, 13, 20, 0.9);
-border: 1px solid var(--card-border);
-color: var(--text-muted);
-padding: 6px 14px;
-border-radius: 20px;
-font-size: 0.75rem;
-font-weight: 700;
-cursor: pointer;
-text-transform: uppercase;
-letter-spacing: 1px;
-display: flex;
-align-items: center;
-gap: 6px;
-transition: 0.3s;
-}
-.nav-btn.active { color: var(--accent-glow); border-color: var(--accent-glow); box-shadow: var(--neon-glow); }
-.btn-share-vibrant {
-background: linear-gradient(135deg, #E50914, #A80712);
-border: 1px solid #FF4D5A;
-color: #fff;
-padding: 8px 14px;
-border-radius: 12px;
-font-size: 0.75rem;
-font-weight: 800;
-cursor: pointer;
-text-transform: uppercase;
-box-shadow: 0 0 15px rgba(229, 9, 20, 0.6);
-display: inline-flex;
-align-items: center;
-gap: 5px;
-transition: 0.3s;
-}
-.btn-share-vibrant:hover { transform: scale(1.05); box-shadow: 0 0 25px rgba(229, 9, 20, 0.8); }
-.stats-grid {
-display: grid;
-grid-template-columns: 1fr 1fr;
-gap: 12px;
-}
-.stat-card {
-background: var(--card-bg);
-border: 1px solid var(--card-border);
-border-radius: 16px;
-padding: 16px;
-text-align: center;
-box-shadow: 0 4px 25px rgba(0, 0, 0, 0.6), inset 0 0 10px rgba(229, 9, 20, 0.1);
-}
-.stat-value {
-font-family: 'Orbitron', sans-serif;
-font-size: 1.6rem;
-font-weight: 800;
-color: #fff;
-margin-bottom: 2px;
-text-shadow: 0 0 12px rgba(229, 9, 20, 0.6);
-}
-.stat-label {
-font-size: 0.7rem;
-color: var(--text-muted);
-font-weight: 700;
-text-transform: uppercase;
-letter-spacing: 1px;
-}
-.accordion-item {
-background: var(--card-bg);
-border: 1px solid var(--card-border);
-border-radius: 16px;
-overflow: hidden;
-margin-bottom: 12px;
-box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-}
-.accordion-header {
-padding: 16px 20px;
-display: flex;
-justify-content: space-between;
-align-items: center;
-cursor: pointer;
-font-weight: 700;
-font-size: 0.85rem;
-color: var(--text-muted);
-text-transform: uppercase;
-letter-spacing: 1px;
-user-select: none;
-}
-.accordion-header.active { color: var(--accent-glow); text-shadow: 0 0 8px var(--accent-glow); }
-.accordion-icon { transition: transform 0.3s ease; }
-.accordion-header.active .accordion-icon { transform: rotate(180deg); }
-.accordion-content {
-padding: 0 20px 20px 20px;
-display: none;
-flex-direction: column;
-gap: 12px;
-}
-.accordion-content.show { display: flex; }
-.input-field {
-width: 100%;
-background: #030407;
-border: 1px solid var(--card-border);
-border-radius: 12px;
-padding: 14px;
-color: #fff;
-font-family: 'Orbitron', 'Cairo', sans-serif;
-font-size: 0.95rem;
-text-align: center;
-outline: none;
-transition: 0.3s;
-box-shadow: inset 0 0 8px rgba(0,0,0,0.8);
-}
-.input-field:focus { border-color: var(--accent-glow); box-shadow: var(--neon-glow), inset 0 0 8px rgba(229, 9, 20, 0.2); }
-.btn-submit {
-width: 100%;
-background: linear-gradient(135deg, #A80712, #E50914);
-border: 1px solid var(--accent-glow);
-border-radius: 12px;
-color: #fff;
-padding: 14px;
-font-weight: 800;
-font-size: 0.9rem;
-text-transform: uppercase;
-letter-spacing: 1.5px;
-cursor: pointer;
-box-shadow: var(--neon-glow);
-transition: 0.3s;
-}
-.btn-submit:hover { opacity: 0.95; transform: translateY(-2px); box-shadow: 0 0 25px rgba(229, 9, 20, 0.7); }
-.btn-submit:disabled { opacity: 0.5; cursor: wait; transform: none; }
-.btn-danger-all {
-width: 100%;
-background: linear-gradient(135deg, #FF1744, #B71C1C);
-border: 1px solid var(--danger-red);
-border-radius: 12px;
-color: #fff;
-padding: 14px;
-font-weight: 800;
-font-size: 0.85rem;
-text-transform: uppercase;
-letter-spacing: 1.2px;
-cursor: pointer;
-box-shadow: var(--neon-red-glow);
-transition: 0.3s;
-}
-.btn-danger-all:hover { opacity: 0.95; transform: translateY(-2px); box-shadow: 0 0 25px rgba(255, 23, 68, 0.8); }
-.table-header-action {
-display: flex;
-justify-content: space-between;
-align-items: center;
-margin-bottom: 10px;
-}
-.btn-delete-selected {
-background: linear-gradient(135deg, #FF1744, #D32F2F);
-color: #fff;
-border: none;
-padding: 8px 16px;
-border-radius: 10px;
-font-size: 0.75rem;
-font-weight: 800;
-cursor: pointer;
-box-shadow: 0 0 12px rgba(255, 23, 68, 0.5);
-}
-.resellers-table {
-width: 100%;
-border-collapse: collapse;
-font-size: 0.8rem;
-}
-.resellers-table th {
-color: var(--accent-glow);
-padding: 8px 4px;
-text-align: right;
-font-weight: 700;
-border-bottom: 1px solid var(--card-border);
-}
-.resellers-table td {
-padding: 12px 4px;
-border-bottom: 1px solid rgba(255,255,255,0.05);
-vertical-align: middle;
-}
-.code-text { font-family: 'Orbitron', sans-serif; font-size: 0.85rem; color: #fff; font-weight: 700; text-shadow: 0 0 8px rgba(255,255,255,0.3); word-break: break-all; }
-.val-green { color: var(--success-green); font-family: 'Orbitron', sans-serif; font-weight: 700; text-shadow: var(--neon-green-glow); }
-.val-num { font-family: 'Orbitron', sans-serif; }
-.btn-trash {
-background: rgba(255, 23, 68, 0.15);
-border: 1px solid rgba(255, 23, 68, 0.4);
-color: var(--danger-red);
-padding: 6px 12px;
-border-radius: 8px;
-cursor: pointer;
-box-shadow: 0 0 10px rgba(255, 23, 68, 0.3);
-transition: 0.3s;
-}
-.btn-trash:hover { background: rgba(255, 23, 68, 0.3); box-shadow: 0 0 15px rgba(255, 23, 68, 0.6); }
-.msg-box { font-size: 0.8rem; text-align: center; min-height: 18px; margin-top: 4px; font-weight: 700; text-shadow: 0 0 10px rgba(229, 9, 20, 0.4); }
-.hidden { display: none !important; }
-.auth-container-center {
-display: flex;
-flex-direction: column;
-align-items: center;
-justify-content: center;
-min-height: 85vh;
-text-align: center;
-width: 100%;
-}
-.auth-sub { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; line-height: 1.5; }
-.footer-link-btn {
-background: none; border: none; color: var(--accent-glow); font-size: 0.75rem; cursor: pointer; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 700; display: inline-flex; align-items: center; gap: 6px;
-text-shadow: 0 0 8px var(--accent-glow);
-}
-.footer-link-btn:hover { opacity: 0.9; }
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080808">
+  <meta name="description" content="HAX_NON_ROOT — بوابة الخدمات والأدوات">
+  <title>HAX_NON_ROOT | Nacer_22</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root{color-scheme:dark;--bg:#080808;--panel:#121212;--panel2:#171717;--line:rgba(255,255,255,.09);--red:#ef233c;--red2:#b31328;--muted:#929292;--white:#f7f7f7}
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 50% -18%,rgba(239,35,60,.2),transparent 54%),var(--bg);color:var(--white);font-family:"Cairo",Tahoma,Arial,sans-serif}
+    a{color:inherit;text-decoration:none}
+    .wrap{width:min(1080px,calc(100% - 34px));margin:auto}
+    header{height:84px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
+    .brand{display:flex;align-items:center;gap:12px;direction:ltr}
+    .logo{width:44px;height:44px;border:1px solid var(--red);border-radius:13px;display:grid;place-items:center;color:var(--red);font-size:25px;font-weight:900;box-shadow:0 0 24px rgba(239,35,60,.18)}
+    .brand b{font-size:16px;letter-spacing:1px}.brand b span{color:var(--red)}
+    .brand small{display:block;color:#777;font-size:9px;letter-spacing:2.4px;margin-top:2px}
+    .status{border:1px solid rgba(239,35,60,.28);border-radius:30px;padding:7px 12px;color:#ff8190;font-size:10px;letter-spacing:1px}
+    .hero{padding:76px 0 34px;text-align:center}
+    .eyebrow{color:var(--red);font-size:10px;font-weight:800;letter-spacing:3px;direction:ltr}
+    h1{font-size:clamp(38px,7vw,66px);line-height:1.18;margin:17px 0 12px;font-weight:900}
+    h1 span{color:var(--red);text-shadow:0 0 30px rgba(239,35,60,.25)}
+    .hero p{max-width:620px;margin:0 auto;color:#a1a1a1;font-size:13px;line-height:2.1}
+    .section-head{display:flex;align-items:end;justify-content:space-between;margin:35px 0 16px}
+    .section-head h2{font-size:18px;margin:0}.section-head p{color:#777;font-size:10px;margin:0}
+    .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+    .card{position:relative;min-height:255px;padding:23px;border:1px solid var(--line);border-radius:18px;background:linear-gradient(145deg,rgba(27,27,27,.98),rgba(13,13,13,.98));overflow:hidden;display:flex;flex-direction:column;transition:transform .22s,border-color .22s,box-shadow .22s}
+    .card:before{content:"";position:absolute;inset:0 auto auto 0;width:100%;height:2px;background:linear-gradient(90deg,transparent,var(--red),transparent);opacity:.8}
+    .card:hover{transform:translateY(-4px);border-color:rgba(239,35,60,.5);box-shadow:0 16px 44px rgba(0,0,0,.35),0 0 30px rgba(239,35,60,.08)}
+    .icon{width:48px;height:48px;border:1px solid rgba(239,35,60,.25);background:rgba(239,35,60,.09);border-radius:14px;display:grid;place-items:center;color:#ff7180;font-size:22px}
+    .card h3{font-size:18px;margin:20px 0 7px;direction:ltr;text-align:right}
+    .card p{font-size:11px;color:#9a9a9a;line-height:2;margin:0 0 22px;flex:1}
+    .open{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--line);padding-top:14px;color:#ff7887;font-size:11px;font-weight:800}
+    .arrow{font-size:18px;direction:ltr}
+    .notice{margin:24px 0 48px;padding:16px 18px;border:1px solid rgba(239,35,60,.24);border-radius:13px;background:rgba(239,35,60,.055);display:flex;gap:12px;align-items:flex-start}
+    .notice b{font-size:11px;color:#ff7c8b}.notice p{font-size:10px;line-height:2;color:#aaa;margin:4px 0 0}
+    footer{border-top:1px solid var(--line);padding:22px 0 28px;color:#666;font-size:10px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    footer span{direction:ltr}
+    @media(max-width:800px){.grid{grid-template-columns:1fr 1fr}.hero{padding:60px 0 25px}}
+    @media(max-width:540px){.wrap{width:calc(100% - 26px)}header{height:72px}.brand b{font-size:13px}.status{font-size:8px;padding:6px 9px}.hero{padding:52px 0 20px}h1{font-size:42px}.hero p{font-size:11px}.grid{grid-template-columns:1fr;gap:12px}.card{min-height:220px;padding:19px}.section-head{align-items:flex-start;flex-direction:column;gap:4px}.notice{margin-bottom:35px}}
+  </style>
 </head>
 <body>
+  <div class="wrap">
+    <header>
+      <a class="brand" href="./" aria-label="HAX_NON_ROOT home">
+        <span class="logo">H</span>
+        <span><b>HAX<span>_</span>NON_ROOT</b><small>NACER_22 · SERVICES HUB</small></span>
+      </a>
+      <span class="status">● SYSTEM HUB</span>
+    </header>
 
-<div class="dashboard-container" id="appRoot">
+    <main>
+      <section class="hero">
+        <div class="eyebrow">WELCOME TO HAX_NON_ROOT</div>
+        <h1>مركز <span>الخدمات</span></h1>
+        <p>بوابتك للوصول إلى أدوات إدارة الموزعين، حماية حساب المدير، وملفات الإعداد الخاصة بمشروع HAX_NON_ROOT.</p>
+      </section>
 
-<!-- ================= 1. شاشة تسجيل دخول الموزع ================= -->
-<div id="resellerLoginView" class="auth-container-center">
-<div class="brand-logo-container">
-<button class="top-pill-btn" onclick="showAdminLogin()">
-🛡 RESELLER ACCESS
-</button>
-<div class="brand-logo" style="text-align: left;">
-HAX_NON_ROOT
-<span>CLIENT</span>
-</div>
-</div>
+      <section aria-labelledby="services-title">
+        <div class="section-head">
+          <h2 id="services-title">الخدمات المتاحة</h2>
+          <p>اختر الخدمة التي تريد فتحها</p>
+        </div>
+        <div class="grid">
+          <a class="card" href="https://haxreseller-production.up.railway.app/" target="_blank" rel="noopener noreferrer">
+            <span class="icon">♙</span>
+            <h3>HAX_RESELLER</h3>
+            <p>إدارة الموزعين، أرصدتهم، رموز الدخول، ومفاتيح الوصول من لوحة واحدة.</p>
+            <span class="open"><span>فتح لوحة الموزعين</span><span class="arrow">↗</span></span>
+          </a>
+          <a class="card" href="https://haxpassword-production.up.railway.app/" target="_blank" rel="noopener noreferrer">
+            <span class="icon">⌑</span>
+            <h3>HAX_PASSWORD</h3>
+            <p>تسجيل دخول المدير، تغيير كلمة المرور، وإبطال الجلسات القديمة لحماية الحساب.</p>
+            <span class="open"><span>فتح مركز الأمان</span><span class="arrow">↗</span></span>
+          </a>
+          <a class="card" href="https://nacer-22.github.io/HAX_CONFIG/" target="_blank" rel="noopener noreferrer">
+            <span class="icon">⇩</span>
+            <h3>HAX_CONFIG</h3>
+            <p>عرض وتنزيل ملفات الإعداد وبيان الاشتراك الخاص بمشروع HAX_NON_ROOT.</p>
+            <span class="open"><span>فتح ملفات الإعداد</span><span class="arrow">↗</span></span>
+          </a>
+        </div>
+      </section>
 
-<div style="width: 100%; max-width: 380px; display: flex; flex-direction: column; gap: 16px; margin-top: 20px;">
-<div class="auth-sub">ENTER YOUR RESELLER CODE<br>TO ACCESS THE PANEL</div>
+      <aside class="notice">
+        <span class="icon">!</span>
+        <div>
+          <b>ملاحظة حول ملفات الإعداد</b>
+          <p>ملف Nacer.json ما زال قالباً؛ يجب إدخال بيانات خادمك أنت قبل استخدامه. لم تتم إضافة بيانات اتصال أو حسابات تخص طرفاً آخر.</p>
+        </div>
+      </aside>
+    </main>
 
-<div style="text-align: right; font-size: 0.65rem; color: var(--accent-glow); font-weight: 700; margin-bottom: -10px;">RESELLER CODE</div>
-<div style="position: relative; display: flex; align-items: center;">
-<input type="text" id="resellerInputCode" class="input-field" placeholder="ENTER RESELLER CODE" autocomplete="off" style="padding-left: 45px; text-align: center;">
-<span style="position: absolute; left: 16px; color: var(--accent-glow); font-size: 0.9rem;">🔑</span>
-</div>
-
-<button class="btn-submit" onclick="loginAsReseller()">→ UNLOCK</button>
-
-<div style="margin-top: 15px; display: flex; flex-direction: column; gap: 10px; align-items: center;">
-<span style="font-size: 0.7rem; color: var(--text-muted);">No key? Contact your seller.</span>
-<button class="footer-link-btn" onclick="showAdminLogin()">
-🛡 ADMIN ACCESS
-</button>
-</div>
-</div>
-</div>
-
-<!-- ================= 2. شاشة تسجيل دخول الأدمن ================= -->
-<div id="adminLoginView" class="auth-container-center hidden">
-<div class="brand-logo-container">
-<button class="top-pill-btn" onclick="showResellerLogin()">
-🛡 ADMIN ACCESS
-</button>
-<div class="brand-logo" style="text-align: left;">
-HAX_NON_ROOT
-<span>CLIENT</span>
-</div>
-</div>
-
-<div style="width: 100%; max-width: 380px; display: flex; flex-direction: column; gap: 16px; margin-top: 20px;">
-<div class="auth-sub">RESTRICTED AREA<br>AUTHORIZED PERSONNEL ONLY</div>
-
-<div style="position: relative; display: flex; align-items: center; margin-top: 10px;">
-<input type="text" id="adminInputUser" class="input-field" placeholder="ENTER ADMIN USERNAME" autocomplete="username" style="text-align:center;">
-<input type="password" id="adminInputPass" class="input-field" placeholder="ENTER ADMIN PASSWORD" autocomplete="off" style="padding-left: 45px; text-align: center;">
-<span style="position: absolute; left: 16px; color: var(--accent-glow); font-size: 0.9rem;">🔒</span>
-</div>
-
-<button class="btn-submit" onclick="loginAsAdmin()">→ LOGIN</button>
-
-<div style="margin-top: 15px; text-align: center;">
-<button class="footer-link-btn" onclick="showResellerLogin()">
-◄ BACK TO RESELLER LOGIN
-</button>
-</div>
-</div>
-</div>
-
-<!-- ================= 3. لوحة تحكم الموزع ================= -->
-<div id="resellerPanel" class="hidden" style="width:100%;">
-<div class="header-bar">
-<div class="brand-logo" style="font-size: 1.2rem;">HAX_NON_ROOT<span>CLIENT</span></div>
-<div class="nav-btns">
-<button class="nav-btn active">👤 RESELLER</button>
-<button class="nav-btn" onclick="logout()">LOGOUT ➔</button>
-</div>
-</div>
-
-<div class="stat-card" style="margin-bottom: 16px;">
-<div class="auth-sub">YOUR RESELLER CODE</div>
-<div class="stat-value" id="resellerDisplayCode" style="color: var(--accent-glow);">--</div>
-<div class="auth-sub" style="margin-top: 10px;">YOUR BALANCE</div>
-<div class="stat-value" id="resellerDisplayBalance" style="color: var(--success-green); text-shadow: var(--neon-green-glow);">0.00</div>
-<div style="font-size: 0.7rem; color: var(--text-muted); margin-top: 2px;">Created <span id="resellerKeysCountBadge" style="color: #fff; font-weight:700;">0</span> keys</div>
-</div>
-
-<div class="accordion-item">
-<div class="accordion-header active" onclick="toggleAccordion(this)">
-<span>⚡ GENERATE KEYS</span>
-<span class="accordion-icon">❯</span>
-</div>
-<div class="accordion-content show">
-
-<div style="font-size: 0.7rem; color: var(--accent-glow); font-weight: 700; text-align: right; margin-bottom: -6px;">مدة المفتاح (DURATION)</div>
-<select id="keyDurationSelect" class="input-field">
-<option value="3600000">1 Hour - 0.50</option>
-<option value="10800000">3 Hours - 1.00</option>
-<option value="21600000">6 Hours - 1.50</option>
-<option value="43200000">12 Hours - 2.00</option>
-<option value="86400000">24 Hours - 2.50</option>
-<option value="259200000">3 Days - 3.50</option>
-<option value="604800000">7 Days - 4.50</option>
-<option value="1296000000">15 Days - 6.00</option>
-<option value="2592000000" selected>30 Days - 10.00</option>
-</select>
-
-<div style="font-size: 0.7rem; color: var(--accent-glow); font-weight: 700; text-align: right; margin-bottom: -6px;">عدد الأجهزة المسموحة (ALLOWED DEVICES)</div>
-<select id="keyMaxDevicesSelect" class="input-field">
-<option value="1" selected>📱 جهاز 1 فقط (1 Device)</option>
-<option value="2">📱📱 جهازين (2 Devices)</option>
-<option value="3">📱📱📱 3 أجهزة (3 Devices)</option>
-<option value="5">💻 5 أجهزة (5 Devices)</option>
-</select>
-
-<div style="display:flex; align-items:center; gap:10px; margin-top:5px;">
-<input type="number" id="keyQuantityInput" class="input-field" value="1" min="1" max="10" inputmode="numeric" style="max-width:100px;" title="كمية المفاتيح (1-10)">
-<button class="btn-submit" id="generateBtn" onclick="generateKeys()">🔥 GENERATE KEYS</button>
-</div>
-</div>
-</div>
-
-<div id="newKeysResultBox" class="hidden" style="background:rgba(0,230,118,0.1); border:1px solid rgba(0,230,118,0.4); border-radius:16px; padding:15px; margin-bottom:12px; box-shadow: var(--neon-green-glow);">
-<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-<span style="font-size:0.75rem; color:var(--success-green); font-weight:900;">NEW KEYS (<span id="newKeysCountNum">1</span>)</span>
-</div>
-<div id="newKeysListContent" style="display:flex; flex-direction:column; gap:8px;"></div>
-</div>
-
-<div class="accordion-item">
-<div class="accordion-header active" onclick="toggleAccordion(this)">
-<span>🔑 MY KEYS</span>
-<span class="accordion-icon">❯</span>
-</div>
-<div class="accordion-content show">
-<button class="btn-danger-all" style="margin-bottom: 8px;" onclick="deleteAllResellerKeys()">🗑 DELETE ALL MY KEYS</button>
-<div id="resellerKeysList" style="max-height: 240px; overflow-y: auto; display:flex; flex-direction:column; gap:8px;">
-<div style="text-align:center; color:var(--text-muted); font-size:0.8rem;">No keys created yet</div>
-</div>
-</div>
-</div>
-</div>
-
-<!-- ================= 4. لوحة تحكم الأدمن ================= -->
-<div id="adminPanel" class="hidden" style="width:100%;">
-<div class="header-bar">
-<div class="brand-logo" style="font-size: 1.2rem;">HAX_NON_ROOT<span>CLIENT</span></div>
-<div class="nav-btns">
-<button class="nav-btn active">⬡ ADMIN</button>
-<button class="nav-btn" onclick="logout()">LOGOUT ➔</button>
-</div>
-</div>
-
-<div class="stats-grid" style="margin-bottom: 16px;">
-<div class="stat-card">
-<div class="stat-value" id="statResellers">0</div>
-<div class="stat-label">RESELLERS</div>
-</div>
-<div class="stat-card">
-<div class="stat-value" id="statKeys">0</div>
-<div class="stat-label">KEYS</div>
-</div>
-<div class="stat-card">
-<div class="stat-value" id="statBalance" style="color:var(--success-green);">0.00</div>
-<div class="stat-label">BALANCE</div>
-</div>
-<div class="stat-card">
-<div class="stat-value" id="statPrice">0</div>
-<div class="stat-label">ACTIVE KEYS</div>
-</div>
-</div>
-
-<div class="accordion-item">
-<div class="accordion-header active" onclick="toggleAccordion(this)">
-<span>⚠️ SYSTEM KEYS CONTROL</span>
-<span class="accordion-icon">❯</span>
-</div>
-<div class="accordion-content show">
-<button class="btn-danger-all" onclick="deleteAllSystemKeys()">🔥 DELETE ALL KEYS IN SYSTEM</button>
-</div>
-</div>
-
-<div class="accordion-item">
-<div class="accordion-header" onclick="toggleAccordion(this)">
-<span>👤 ADD RESELLER</span>
-<span class="accordion-icon">❯</span>
-</div>
-<div class="accordion-content">
-<input type="text" id="addResellerName" class="input-field" placeholder="Reseller name" autocomplete="off">
-<input type="number" id="addResellerBal" class="input-field" placeholder="Initial Balance" value="10" inputmode="decimal">
-<button class="btn-submit" onclick="addNewReseller()">➕ ADD RESELLER</button>
-</div>
-</div>
-
-<div class="accordion-item">
-<div class="accordion-header" onclick="toggleAccordion(this)">
-<span>💲 CHARGE & MANAGE BALANCE</span>
-<span class="accordion-icon">❯</span>
-</div>
-<div class="accordion-content">
-<select id="chargeSelectReseller" class="input-field"></select>
-<input type="number" id="chargeAmount" class="input-field" placeholder="المبلغ (اضافه أو خصم)" inputmode="decimal">
-<div style="display:flex; gap:10px;">
-<button class="btn-submit" style="background:linear-gradient(135deg, #00E676, #E50914); box-shadow:var(--neon-green-glow);" onclick="chargeResellerBalance('add')">➕ إضافة رصيد</button>
-<button class="btn-submit" style="background:linear-gradient(135deg, #FF1744, #C62828); box-shadow:0 0 15px rgba(255,23,68,0.4);" onclick="chargeResellerBalance('deduct')">➖ خصم رصيد</button>
-</div>
-</div>
-</div>
-
-<div class="accordion-item">
-<div class="accordion-header active" onclick="toggleAccordion(this)">
-<span>👥 RESELLERS <span style="font-size:0.75rem; color:var(--accent-glow);" id="totalResellersCount">0 TOTAL</span></span>
-<span class="accordion-icon">❯</span>
-</div>
-<div class="accordion-content show">
-<div class="table-header-action">
-<label style="font-size: 0.75rem; color: var(--text-muted); cursor: pointer; display:flex; align-items:center; gap:5px;">
-<input type="checkbox" id="selectAllCb" onchange="toggleSelectAll(this)"> Select All
-</label>
-<button class="btn-delete-selected" onclick="deleteSelectedResellers()">DELETE SELECTED</button>
-</div>
-<table class="resellers-table">
-<thead>
-<tr>
-<th style="width:20px">#</th>
-<th>CODE</th>
-<th>BAL</th>
-<th>KEYS</th>
-<th style="text-align:center">ACTION</th>
-</tr>
-</thead>
-<tbody id="adminResellersTableBody"></tbody>
-</table>
-</div>
-</div>
-
-</div>
-
-<div id="msg" class="msg-box"></div>
-</div>
-
-
-
-  <script src="assets/config.js" defer></script>
-  <script src="assets/app.js" defer></script>
+    <footer>
+      <span>HAX_NON_ROOT · NACER_22</span>
+      <span>BLACK / RED EDITION</span>
+    </footer>
+  </div>
 </body>
-  </html>
+</html>
