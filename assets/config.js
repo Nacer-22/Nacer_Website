@@ -1,10 +1,5 @@
 window.HAX_SITE_CONFIG = {
-  brand: "HAX_NON_ROOT",
-  owner: "Nacer_22",
-  links: {
-    reseller: "",
-    password: "",
-    config: "",
-    telegram: ""
-  }
+  // Set the URL of your deployed HAX_RESELLER API if this static page is hosted separately.
+  // Leave empty only when the page is served by the HAX_RESELLER server on the same domain.
+  API_BASE_URL: ""
 };
