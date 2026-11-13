@@ -621,6 +621,15 @@ async function getDeviceDetails() {
   const ua = navigator.userAgent || '';
   let model = '';
   let platform = navigator.userAgentData?.platform || navigator.platform || '';
+  let browser = 'متصفح غير معروف';
+  if (/EdgA?\//i.test(ua)) browser = 'Edge';
+  else if (/SamsungBrowser\//i.test(ua)) browser = 'Samsung Internet';
+  else if (/OPR\//i.test(ua)) browser = 'Opera';
+  else if (/Firefox\//i.test(ua) || /FxiOS\//i.test(ua)) browser = 'Firefox';
+  else if (/CriOS\//i.test(ua)) browser = 'Chrome';
+  else if (/Chrome\//i.test(ua)) browser = 'Chrome';
+  else if (/Safari\//i.test(ua)) browser = 'Safari';
+
   try {
     if (navigator.userAgentData?.getHighEntropyValues) {
       const hints = await navigator.userAgentData.getHighEntropyValues(['model', 'platform']);
@@ -628,15 +637,30 @@ async function getDeviceDetails() {
       platform = String(hints.platform || platform || '').trim();
     }
   } catch (_) {}
+
   if (!model) {
-        const androidMatch = ua.match(/Android[^;)]*;\s*([^;)]+?)(?:\s+Build\/[^;)]+)?[;)]/i);
-    if (androidMatch && !/^(?:K|wv|mobile)$/i.test(androidMatch[1].trim())) model = androidMatch[1].trim();
-    else if (/iPhone/i.test(ua)) model = 'iPhone (الموديل الدقيق مخفي من iOS)';
-    else if (/iPad/i.test(ua)) model = 'iPad (الموديل الدقيق مخفي من iOS)';
-    else if (/Windows/i.test(ua)) model = 'كمبيوتر Windows (الموديل غير متاح من المتصفح)';
-    else if (/Macintosh|Mac OS X/i.test(ua)) model = 'Mac (الموديل غير متاح من المتصفح)';
+    const androidMatch = ua.match(/Android[^;)]*;\s*([^;)]+?)(?:\s+Build\/[^;)]+)?[;)]/i);
+    if (androidMatch) {
+      const candidate = androidMatch[1].replace(/\s+Build\/.*/i, '').trim();
+      if (candidate && !/^(?:K|wv|mobile|linux|armv\d+|unknown)$/i.test(candidate)) model = candidate;
+    }
   }
-  return { device_model: model || 'الموديل غير متاح من المتصفح', device_platform: platform || 'غير معروف' };
+
+  if (!model) {
+    if (/iPhone/i.test(ua)) model = 'iPhone · ' + browser;
+    else if (/iPad/i.test(ua) || (platform === 'MacIntel' && navigator.maxTouchPoints > 1)) model = 'iPad · ' + browser;
+    else if (/Android/i.test(ua) || /Android/i.test(platform)) model = 'Android phone · ' + browser;
+    else if (/Windows/i.test(ua) || /Win/i.test(platform)) model = 'Windows PC · ' + browser;
+    else if (/Macintosh|Mac OS X/i.test(ua) || /macOS|Mac/i.test(platform)) model = 'Mac · ' + browser;
+    else if (/CrOS/i.test(ua)) model = 'Chromebook · ' + browser;
+    else if (/Linux/i.test(ua) || /Linux/i.test(platform)) model = 'Linux device · ' + browser;
+    else model = 'جهاز غير محدد · ' + browser;
+  }
+
+  return {
+    device_model: model.slice(0, 80),
+    device_platform: String(platform || (/Android/i.test(ua) ? 'Android' : /iPhone|iPad/i.test(ua) ? 'iOS' : 'غير معروف')).slice(0, 40)
+  };
 }
 
 function detectDeviceLabel() {
