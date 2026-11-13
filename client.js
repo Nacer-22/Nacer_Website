@@ -20,7 +20,7 @@ let currentLang = localStorage.getItem('hax_non_root_lang') || 'ar';
 let haxClientMaintenance = false;
 async function refreshClientMaintenance() {
   try {
-    const response = await fetch(API_BASE_URL.replace(/\\/+$/, '') + '/api/public/maintenance', { cache: 'no-store' });
+    const response = await fetch(API_BASE_URL + '/api/public/maintenance', { cache: 'no-store' });
     if (!response.ok) return;
     const data = await response.json();
     haxClientMaintenance = !!(data.maintenance && data.maintenance.client);
