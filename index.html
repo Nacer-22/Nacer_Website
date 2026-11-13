@@ -659,9 +659,27 @@ body::after{
  filter:drop-shadow(0 0 6px rgba(255,35,75,.45));
 }
 
+
+#haxMaintenanceScreen{position:fixed;inset:0;z-index:99999;display:none;align-items:center;justify-content:center;padding:24px;background:radial-gradient(circle at 50% 0%,rgba(160,12,35,.24),transparent 45%),#030407;color:#fff;text-align:center}
+#haxMaintenanceScreen .maintenance-card{width:min(100%,420px);padding:34px 24px;border:1px solid rgba(255,70,95,.42);border-radius:24px;background:linear-gradient(145deg,#111722,#080b12);box-shadow:0 20px 70px rgba(0,0,0,.55),0 0 35px rgba(190,15,53,.15)}
+#haxMaintenanceScreen .maintenance-symbol{width:76px;height:76px;margin:0 auto 20px;border:1px solid rgba(255,85,110,.45);border-radius:22px;display:grid;place-items:center;color:#ff607d;font-size:34px;background:rgba(160,15,45,.16)}
+#haxMaintenanceScreen h1{font-size:1.45rem;margin:0 0 12px;color:#ff7189}
+#haxMaintenanceScreen p{color:#b9c3d1;line-height:1.9;font-size:.94rem}
+#haxMaintenanceScreen .maintenance-caption{margin-top:22px;color:#ff7189;font-size:.72rem;font-weight:900;letter-spacing:2px}
+
 </style>
 </head>
 <body>
+
+
+<div id="haxMaintenanceScreen" role="status" aria-live="polite">
+  <div class="maintenance-card">
+    <div class="maintenance-symbol" aria-hidden="true">⚙</div>
+    <h1>الموقع تحت الصيانة</h1>
+    <p>نعمل حالياً على تحسين الخدمة. يرجى العودة بعد قليل، وشكراً لصبركم.</p>
+    <div class="maintenance-caption">HAX_NON_ROOT · CLIENT</div>
+  </div>
+</div>
 
 <div class="app-container">
   <!-- ================= صفحة تسجيل الدخول ================= -->
