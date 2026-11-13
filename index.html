@@ -1,107 +1,528 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#080808">
-  <meta name="description" content="HAX_NON_ROOT — بوابة الخدمات والأدوات">
-  <title>HAX_NON_ROOT | Nacer_22</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <style>
-    :root{color-scheme:dark;--bg:#080808;--panel:#121212;--panel2:#171717;--line:rgba(255,255,255,.09);--red:#ef233c;--red2:#b31328;--muted:#929292;--white:#f7f7f7}
-    *{box-sizing:border-box}
-    body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 50% -18%,rgba(239,35,60,.2),transparent 54%),var(--bg);color:var(--white);font-family:"Cairo",Tahoma,Arial,sans-serif}
-    a{color:inherit;text-decoration:none}
-    .wrap{width:min(1080px,calc(100% - 34px));margin:auto}
-    header{height:84px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
-    .brand{display:flex;align-items:center;gap:12px;direction:ltr}
-    .logo{width:44px;height:44px;border:1px solid var(--red);border-radius:13px;display:grid;place-items:center;color:var(--red);font-size:25px;font-weight:900;box-shadow:0 0 24px rgba(239,35,60,.18)}
-    .brand b{font-size:16px;letter-spacing:1px}.brand b span{color:var(--red)}
-    .brand small{display:block;color:#777;font-size:9px;letter-spacing:2.4px;margin-top:2px}
-    .status{border:1px solid rgba(239,35,60,.28);border-radius:30px;padding:7px 12px;color:#ff8190;font-size:10px;letter-spacing:1px}
-    .hero{padding:76px 0 34px;text-align:center}
-    .eyebrow{color:var(--red);font-size:10px;font-weight:800;letter-spacing:3px;direction:ltr}
-    h1{font-size:clamp(38px,7vw,66px);line-height:1.18;margin:17px 0 12px;font-weight:900}
-    h1 span{color:var(--red);text-shadow:0 0 30px rgba(239,35,60,.25)}
-    .hero p{max-width:620px;margin:0 auto;color:#a1a1a1;font-size:13px;line-height:2.1}
-    .section-head{display:flex;align-items:end;justify-content:space-between;margin:35px 0 16px}
-    .section-head h2{font-size:18px;margin:0}.section-head p{color:#777;font-size:10px;margin:0}
-    .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
-    .card{position:relative;min-height:255px;padding:23px;border:1px solid var(--line);border-radius:18px;background:linear-gradient(145deg,rgba(27,27,27,.98),rgba(13,13,13,.98));overflow:hidden;display:flex;flex-direction:column;transition:transform .22s,border-color .22s,box-shadow .22s}
-    .card:before{content:"";position:absolute;inset:0 auto auto 0;width:100%;height:2px;background:linear-gradient(90deg,transparent,var(--red),transparent);opacity:.8}
-    .card:hover{transform:translateY(-4px);border-color:rgba(239,35,60,.5);box-shadow:0 16px 44px rgba(0,0,0,.35),0 0 30px rgba(239,35,60,.08)}
-    .icon{width:48px;height:48px;border:1px solid rgba(239,35,60,.25);background:rgba(239,35,60,.09);border-radius:14px;display:grid;place-items:center;color:#ff7180;font-size:22px}
-    .card h3{font-size:18px;margin:20px 0 7px;direction:ltr;text-align:right}
-    .card p{font-size:11px;color:#9a9a9a;line-height:2;margin:0 0 22px;flex:1}
-    .open{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--line);padding-top:14px;color:#ff7887;font-size:11px;font-weight:800}
-    .arrow{font-size:18px;direction:ltr}
-    .notice{margin:24px 0 48px;padding:16px 18px;border:1px solid rgba(239,35,60,.24);border-radius:13px;background:rgba(239,35,60,.055);display:flex;gap:12px;align-items:flex-start}
-    .notice b{font-size:11px;color:#ff7c8b}.notice p{font-size:10px;line-height:2;color:#aaa;margin:4px 0 0}
-    footer{border-top:1px solid var(--line);padding:22px 0 28px;color:#666;font-size:10px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
-    footer span{direction:ltr}
-    @media(max-width:800px){.grid{grid-template-columns:1fr 1fr}.hero{padding:60px 0 25px}}
-    @media(max-width:540px){.wrap{width:calc(100% - 26px)}header{height:72px}.brand b{font-size:13px}.status{font-size:8px;padding:6px 9px}.hero{padding:52px 0 20px}h1{font-size:42px}.hero p{font-size:11px}.grid{grid-template-columns:1fr;gap:12px}.card{min-height:220px;padding:19px}.section-head{align-items:flex-start;flex-direction:column;gap:4px}.notice{margin-bottom:35px}}
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#030407">
+<title>HAX_NON_ROOT CLIENT - Elite Edition</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --blue: #e50914;
+  --blue-lite: #ff4757;
+  --blue-dark: #990014;
+  --bg: #030407;
+  --card-bg: #0A0D14;
+  --border: rgba(229, 9, 20, 0.35);
+  --muted: #90A4AE; 
+  --text: #FFFFFF;
+  --success: #00E676; 
+  --error: #FF1744; 
+  --neon-glow: 0 0 20px rgba(229, 9, 20, 0.5), inset 0 0 10px rgba(229, 9, 20, 0.2);
+  --neon-card-glow: 0 8px 32px rgba(0, 0, 0, 0.8), 0 0 15px rgba(229, 9, 20, 0.15);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;font-family:'Cairo',sans-serif;}
+html,body{height:100%;}
+body{background:radial-gradient(circle at center, #180609 0%, var(--bg) 100%);color:var(--text);display:flex;justify-content:center;align-items:center;min-height:100dvh;overflow-x:hidden;position:relative;}
+body::before {
+  content: ""; position: absolute; inset: 0;
+  background-image: linear-gradient(rgba(229, 9, 20, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(229, 9, 20, 0.05) 1px, transparent 1px);
+  background-size: 35px 35px; pointer-events: none; z-index: 0;
+}
+.app-container{position:relative;z-index:1;width:100%;max-width:420px;height:100dvh;padding:18px;display:flex;flex-direction:column;justify-content:space-between;}
+.view{display:none;flex-direction:column;height:100%;min-height:0;}
+.view.active{display:flex;}
+.top-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+.status-pill{display:inline-flex;align-items:center;gap:6px;font-size:0.8rem;font-weight:700;color:var(--success);text-shadow:0 0 8px var(--success);}
+.status-dot{width:9px;height:9px;border-radius:50%;background:var(--success);box-shadow:0 0 12px var(--success);}
+.header-actions{display:flex;gap:10px;align-items:center;}
+.lang-btn,.logout-btn{background:rgba(229, 9, 20, 0.15);border:1px solid var(--border);color:#fff;padding:6px 14px;border-radius:10px;font-size:0.78rem;font-weight:800;cursor:pointer;transition:0.3s;}
+.lang-btn:hover,.logout-btn:hover{background:rgba(229, 9, 20, 0.3);box-shadow:var(--neon-glow);}
+.logout-btn{background:rgba(255, 23, 68, 0.15);border-color:rgba(255, 23, 68, 0.4);color:var(--error);}
+.brand{text-align:center;user-select:none;margin-bottom:30px;}
+.logo-title{font-family:'Orbitron',sans-serif;font-weight:900;line-height:1.1;text-transform:uppercase;}
+.logo-title .l1{display:block;font-size:2.4rem;letter-spacing:4px;color:#FFFFFF;text-shadow:0 0 20px rgba(255,255,255,0.4);}
+.logo-title .l2{display:block;font-size:2.1rem;letter-spacing:5px;color:var(--blue-lite);text-shadow:0 0 25px rgba(229, 9, 20, 0.8);margin-top:4px;}
+.brand-sub{font-size:0.82rem;color:var(--muted);margin-top:10px;font-weight:700;letter-spacing:1px;}
+.form-section{width:100%;margin:auto 0;}
+.input-label{display:flex;align-items:center;gap:6px;font-size:0.82rem;font-weight:700;color:var(--blue-lite);margin-bottom:10px;text-align:inherit;}
+.cyber-input-wrapper{position:relative;background:var(--card-bg);border:1px solid var(--border);display:flex;align-items:center;padding:8px;margin-bottom:18px;border-radius:14px;box-shadow:inset 0 0 12px rgba(0,0,0,0.9), 0 0 10px rgba(229,9,20,0.1);}
+.input-field{width:100%;background:transparent;border:none;outline:none;color:#fff;font-family:'Orbitron',sans-serif;font-size:0.95rem;padding:12px;text-align:center;letter-spacing:2px;}
+.action-btn-group{display:flex;align-items:center;gap:6px;}
+.icon-btn,.paste-btn{background:rgba(229,9,20,0.15);border:1px solid var(--border);color:#fff;padding:10px 14px;border-radius:10px;font-size:0.78rem;font-weight:800;cursor:pointer;transition:0.3s;}
+.icon-btn:hover,.paste-btn:hover{background:rgba(229,9,20,0.35);border-color:var(--blue-lite);box-shadow:var(--neon-glow);}
+.btn-primary{width:100%;padding:18px;background:linear-gradient(135deg, var(--blue-dark), var(--blue));border:1px solid var(--blue-lite);color:#fff;font-size:1.1rem;font-weight:900;cursor:pointer;border-radius:14px;box-shadow:var(--neon-glow);text-transform:uppercase;letter-spacing:2px;transition:0.3s;}
+.btn-primary:hover{opacity:1;transform:translateY(-3px);box-shadow:0 0 30px rgba(229,9,20,0.9);}
+.footer-contact{text-align:center;margin-top:25px;font-size:0.78rem;color:var(--muted);font-weight:700;}
+.footer-contact a{color:var(--blue-lite);text-decoration:none;font-weight:900;text-shadow:0 0 10px rgba(255,71,87,0.5);}
+.dash-hero-container{display:flex;flex-direction:column;align-items:center;justify-content:center;margin:8px 0 18px;}
+.dashed-circle-outer{position:relative;width:190px;height:190px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(circle at center, rgba(229, 9, 20, 0.12) 0%, transparent 75%);box-shadow:0 0 30px rgba(229,9,20,0.15), inset 0 0 20px rgba(229,9,20,0.1);}
+.dashed-svg-ring{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg);animation: rotateRing 20s linear infinite;}
+@keyframes rotateRing { 100% { transform: rotate(270deg); } }
+.dashed-svg-ring circle{fill:none;stroke:var(--blue);stroke-width:5;stroke-dasharray:8, 8;filter: drop-shadow(0 0 6px var(--blue));}
+.circle-content{z-index:2;text-align:center;user-select:none;}
+.circle-logo-title{font-family:'Orbitron',sans-serif;font-weight:900;line-height:1;margin-bottom:6px;}
+.circle-logo-title .c1{font-size:1.1rem;color:#FFF;display:block;text-shadow:0 0 10px rgba(255,255,255,0.5);}
+.circle-logo-title .c2{font-size:0.9rem;color:var(--blue-lite);display:block;letter-spacing:2px;text-shadow:0 0 10px var(--blue-lite);}
+.circle-timer-box{font-family:'Orbitron',sans-serif;font-weight:900;font-size:1.35rem;color:#FFF;display:flex;align-items:baseline;justify-content:center;gap:3px;text-shadow:0 0 12px rgba(255,255,255,0.6);}
+.timer-unit{font-size:0.72rem;color:var(--blue-lite);font-weight:800;}
+.circle-timer-label{font-size:0.65rem;color:var(--muted);font-weight:800;margin-top:2px;letter-spacing:1px;}
+.cyber-card{background:var(--card-bg);border:1px solid var(--border);padding:14px 16px;margin-bottom:12px;border-radius:14px;box-shadow:var(--neon-card-glow);transition:0.3s;}
+.cyber-card:hover{border-color:var(--blue-lite);}
+.key-box-content{display:flex;align-items:center;justify-content:space-between;}
+.key-title-sm{font-size:0.75rem;color:var(--muted);font-weight:800;margin-bottom:4px;letter-spacing:0.5px;}
+.key-value-txt{font-family:'Orbitron',sans-serif;font-weight:800;font-size:0.85rem;color:var(--blue-lite);text-shadow:0 0 10px rgba(255,71,87,0.4);}
+.key-value-txt.blurred{filter:blur(6px);user-select:none;}
+.info-grid-3{display:grid;grid-template-columns:repeat(3, 1fr);gap:8px;margin-bottom:12px;}
+.info-sub-card{background:var(--card-bg);border:1px solid var(--border);padding:10px 6px;text-align:center;border-radius:12px;box-shadow:var(--neon-card-glow);}
+.info-sub-card .lbl{font-size:0.62rem;color:var(--muted);font-weight:800;margin-bottom:3px;}
+.info-sub-card .val{font-size:0.75rem;font-weight:900;color:#FFF;word-break:break-all;font-family:'Orbitron',sans-serif;}
+.inject-banner-btn{width:100%;background:linear-gradient(135deg, var(--blue-dark), var(--blue));color:#FFF;padding:16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;border-radius:14px;border:1px solid var(--blue-lite);margin-bottom:12px;box-shadow:var(--neon-glow);transition:0.3s;}
+.inject-banner-btn:hover{transform:translateY(-2px);box-shadow:0 0 30px rgba(229,9,20,0.8);}
+.inject-main-txt{font-weight:900;font-size:1.1rem;letter-spacing:0.5px;}
+.inject-sub-txt{font-size:0.7rem;opacity:0.95;font-weight:700;}
+.section-title-group{font-size:0.78rem;color:var(--blue-lite);font-weight:800;margin:12px 0 8px;text-align:right;letter-spacing:1px;text-shadow:0 0 8px rgba(255,71,87,0.3);}
+.menu-card-item{background:var(--card-bg);border:1px solid var(--border);padding:12px 14px;margin-bottom:10px;border-radius:12px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:0.3s;box-shadow:var(--neon-card-glow);}
+.menu-card-item:hover{border-color:var(--blue-lite);background:rgba(229,9,20,0.08);transform:translateY(-2px);}
+.menu-item-info .title{font-size:0.85rem;font-weight:900;color:#fff;margin-bottom:2px;}
+.menu-item-info .sub{font-size:0.72rem;color:var(--muted);font-weight:700;}
+.menu-item-icon{width:38px;height:38px;border-radius:10px;background:rgba(229,9,20,0.15);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--blue-lite);font-size:1rem;box-shadow:0 0 10px rgba(229,9,20,0.2);}
+.bottom-nav{display:flex;justify-content:space-around;background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:8px 12px;margin-top:auto;box-shadow:0 -5px 25px rgba(0,0,0,0.8), var(--neon-card-glow);}
+.nav-btn{background:none;border:none;color:var(--muted);font-size:0.78rem;font-weight:800;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;flex:1;padding:6px;transition:0.3s;}
+.nav-btn.active{color:var(--blue-lite);text-shadow:0 0 10px var(--blue-lite);}
+.nav-btn svg{width:22px;height:22px;fill:currentColor;filter:drop-shadow(0 0 5px currentColor);}
+.toast{position:fixed;bottom:85px;left:50%;transform:translateX(-50%) translateY(100px);background:linear-gradient(135deg, #0A0D14, #141A29);color:#fff;padding:10px 22px;border-radius:30px;font-size:0.78rem;font-weight:800;border:1px solid var(--blue-lite);transition:all 0.3s;z-index:99;opacity:0;box-shadow:0 0 25px rgba(229,9,20,0.5);}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+.error-msg{color:var(--error);font-size:0.8rem;margin-top:10px;display:none;text-align:center;font-weight:800;text-shadow:0 0 10px rgba(255,23,68,0.5);}
+.error-msg.show{display:block;}
+.pane{display:none;flex:1;overflow-y:auto;}
+.pane.active{display:block;}
+</style>
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <a class="brand" href="./" aria-label="HAX_NON_ROOT home">
-        <span class="logo">H</span>
-        <span><b>HAX<span>_</span>NON_ROOT</b><small>NACER_22 · SERVICES HUB</small></span>
-      </a>
-      <span class="status">● SYSTEM HUB</span>
-    </header>
 
-    <main>
-      <section class="hero">
-        <div class="eyebrow">WELCOME TO HAX_NON_ROOT</div>
-        <h1>مركز <span>الخدمات</span></h1>
-        <p>بوابتك للوصول إلى أدوات إدارة الموزعين، حماية حساب المدير، وملفات الإعداد الخاصة بمشروع HAX_NON_ROOT.</p>
-      </section>
-
-      <section aria-labelledby="services-title">
-        <div class="section-head">
-          <h2 id="services-title">الخدمات المتاحة</h2>
-          <p>اختر الخدمة التي تريد فتحها</p>
+<div class="app-container">
+  <!-- ================= صفحة تسجيل الدخول ================= -->
+  <section id="loginView" class="view active">
+    <div class="top-header">
+      <div style="font-size:0.75rem; color:var(--muted); font-weight:800; font-family:'Orbitron';">24 ms</div>
+      <button class="lang-btn" onclick="toggleLanguage()">🌐 <span id="langIndicator">EN</span></button>
+    </div>
+    <div class="form-section">
+      <div class="brand">
+        <div class="logo-title">
+          <span class="l1">HAX_NON_ROOT</span>
+          <span class="l2">CLIENT</span>
         </div>
-        <div class="grid">
-          <a class="card" href="https://haxreseller-production.up.railway.app/" target="_blank" rel="noopener noreferrer">
-            <span class="icon">♙</span>
-            <h3>HAX_RESELLER</h3>
-            <p>إدارة الموزعين، أرصدتهم، رموز الدخول، ومفاتيح الوصول من لوحة واحدة.</p>
-            <span class="open"><span>فتح لوحة الموزعين</span><span class="arrow">↗</span></span>
-          </a>
-          <a class="card" href="https://haxpassword-production.up.railway.app/" target="_blank" rel="noopener noreferrer">
-            <span class="icon">⌑</span>
-            <h3>HAX_PASSWORD</h3>
-            <p>تسجيل دخول المدير، تغيير كلمة المرور، وإبطال الجلسات القديمة لحماية الحساب.</p>
-            <span class="open"><span>فتح مركز الأمان</span><span class="arrow">↗</span></span>
-          </a>
-          <a class="card" href="./config/" target="_blank" rel="noopener noreferrer">
-            <span class="icon">⇩</span>
-            <h3>HAX_CONFIG</h3>
-            <p>عرض وتنزيل ملفات الإعداد وبيان الاشتراك الخاص بمشروع HAX_NON_ROOT.</p>
-            <span class="open"><span>فتح ملفات الإعداد</span><span class="arrow">↗</span></span>
-          </a>
+        <div class="brand-sub" data-i18n="subTitle">مفتاحك الآمن للاتصال السريع</div>
+      </div>
+      <div class="input-label" data-i18n="keyLabel">مفتاح الدخول (Nacer-XXXX_XXXX-XXXX)</div>
+      <div class="cyber-input-wrapper">
+        <div class="action-btn-group">
+          <button class="icon-btn" onclick="toggleKeyVisibility()" title="إظهار / إخفاء">👁️</button>
+          <button class="paste-btn" onclick="pasteKeyFromClipboard()" data-i18n="pasteBtn">لصق</button>
         </div>
-      </section>
+        <input type="password" id="accessKey" class="input-field" placeholder="Nacer-XXXX_XXXX-XXXX">
+      </div>
+      <div id="errorMsg" class="error-msg"></div>
+      <button class="btn-primary" onclick="login()" data-i18n="loginBtn">دخول النظام</button>
+      <div class="footer-contact">
+        <span data-i18n="noKeyText">لا تملك مفتاحاً؟ تواصل معنا عبر القناة</span><br>
+        <span>HAX_NON_ROOT</span>
+      </div>
+    </div>
+  </section>
 
-      <aside class="notice">
-        <span class="icon">!</span>
-        <div>
-          <b>ملاحظة حول ملفات الإعداد</b>
-          <p>ملف Nacer.json ما زال قالباً؛ يجب إدخال بيانات خادمك أنت قبل استخدامه. لم تتم إضافة بيانات اتصال أو حسابات تخص طرفاً آخر.</p>
+  <!-- ================= لوحة التحكم الرئيسية ================= -->
+  <section id="dashView" class="view">
+    <div class="top-header">
+      <button class="logout-btn" onclick="logout()" data-i18n="logoutBtn">خروج</button>
+      <div class="header-actions">
+        <button class="lang-btn" onclick="toggleLanguage()">🌐 <span id="langIndicator2">EN</span></button>
+        <div class="status-pill"><span class="status-dot"></span><span data-i18n="secureConnected">متصل بأمان</span></div>
+      </div>
+    </div>
+
+    <div style="flex:1; display:flex; flex-direction:column;" class="scroll-content">
+      
+      <!-- القسم الأول: الرئيسية -->
+      <div id="homePane" class="pane active">
+        <div class="dash-hero-container">
+          <div class="dashed-circle-outer">
+            <svg class="dashed-svg-ring" viewBox="0 0 100 100"><circle cx="50" cy="50" r="44"/></svg>
+            <div class="circle-content">
+              <div class="circle-logo-title"><span class="c1">HAX_NON_ROOT</span><span class="c2">CLIENT</span></div>
+              <div id="mainTimerDisplay" class="circle-timer-box">
+                <span>00</span><span class="timer-unit">S</span>
+                <span>00</span><span class="timer-unit">M</span>
+                <span>00</span><span class="timer-unit">H</span>
+              </div>
+              <div class="circle-timer-label" data-i18n="timerLabel">الوقت المتبقي للجلسة</div>
+            </div>
+          </div>
         </div>
-      </aside>
-    </main>
+        
+        <div class="cyber-card">
+          <div class="key-box-content">
+            <div>
+              <div class="key-title-sm" data-i18n="activeKeyTitle">مفتاح الدخول النشط</div>
+              <!-- تمت إضافة زر التشويش هنا أيضاً -->
+              <div id="displayKey" class="key-value-txt blurred">-</div>
+            </div>
+            <div style="display:flex; gap:8px;">
+              <button class="paste-btn" onclick="toggleDisplayKeyMask()" title="تشويش / إظهار">👁️</button>
+              <button class="paste-btn" onclick="copyKey()" data-i18n="copyBtn">نسخ</button>
+            </div>
+          </div>
+        </div>
 
-    <footer>
-      <span>HAX_NON_ROOT · NACER_22</span>
-      <span>BLACK / RED EDITION</span>
-    </footer>
-  </div>
+        <div class="info-grid-3">
+          <div class="info-sub-card"><div class="lbl" data-i18n="deviceLbl">الجهاز</div><div id="deviceOs" class="val">SECURE</div></div>
+          <div class="info-sub-card"><div class="lbl" data-i18n="joinLbl">تاريخ الانضمام</div><div id="activationDate" class="val">-</div></div>
+          <div class="info-sub-card"><div class="lbl" data-i18n="expiryLbl">تاريخ الانتهاء</div><div id="expiryDate" class="val">-</div></div>
+        </div>
+
+        <div class="inject-banner-btn" onclick="launchVpnHub()">
+          <div>
+            <div class="inject-main-txt" data-i18n="subscribeBtn">إضافة الاشتراك</div>
+            <div class="inject-sub-txt" data-i18n="subscribeSub">ربط مباشر مع تطبيق Happ VPN</div>
+          </div>
+          <div style="font-size: 1.3rem; font-weight: 900;">➔</div>
+        </div>
+      </div>
+
+      <!-- القسم الثاني: الإعدادات -->
+      <div id="settingsPane" class="pane">
+        <div class="section-title-group" data-i18n="appsAndCommunity">التطبيقات والمجتمع</div>
+        
+        <div class="menu-card-item" onclick="launchVpnHub()">
+          <div class="menu-item-info">
+            <div class="title" data-i18n="downloadHapp">تحميل تطبيق HAPP</div>
+            <div class="sub" data-i18n="downloadHappSub">احصل على عميل Happ الرسمي</div>
+          </div>
+          <div class="menu-item-icon">⬇</div>
+        </div>
+
+        <div class="section-title-group" data-i18n="accountSection">الحساب</div>
+
+        <div class="menu-card-item" onclick="copyKey()">
+          <div class="menu-item-info">
+            <div class="title" data-i18n="copyKeyTitle">نسخ مفتاح الدخول</div>
+            <div class="sub" data-i18n="copyKeySub">اضغط لنسخ مفتاحك</div>
+          </div>
+          <div class="menu-item-icon">📋</div>
+        </div>
+
+        <div class="menu-card-item" onclick="logout()">
+          <div class="menu-item-info">
+            <div class="title" data-i18n="logoutTitle" style="color:var(--error);">خروج</div>
+            <div class="sub" data-i18n="logoutSub">مسح الجلسة المحفوظة</div>
+          </div>
+          <div class="menu-item-icon" style="color:var(--error); border-color:rgba(255,23,68,0.4); background:rgba(255,23,68,0.15);">🚪</div>
+        </div>
+        
+        <div style="text-align:center; margin-top:20px; font-size:0.72rem; color:var(--muted); font-weight:700;">
+          HAX_NON_ROOT CLIENT • ELITE<br>الإصدار 1.0.5 • محمى ومؤمن
+        </div>
+      </div>
+
+    </div>
+
+    <!-- شريط التنقل السفلي الأسطوري -->
+    <nav class="bottom-nav">
+      <button id="navSettings" class="nav-btn" onclick="showTab('settings')">
+        <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+        <span data-i18n="settingsTab">الإعدادات</span>
+      </button>
+      <button id="navHome" class="nav-btn active" onclick="showTab('home')">
+        <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+        <span data-i18n="homeTab">الرئيسية</span>
+      </button>
+    </nav>
+  </section>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+const API_BASE_URL = 'https://haxreseller-production.up.railway.app';
+const STORAGE_KEY = 'hax_non_root_client_access';
+const DEVICE_KEY = 'hax_non_root_device_id';
+const HAPP_URL = 'happ://crypt5/fzvd4YgqdTHtPvjHwhZcw54y24f7Dk0goBe2Fa1lwDobLeD1wJ/QO6q6l24H6Re0xAiw9PskIQB2kP+rco9tRM+3dKIoFMLXly9M+D4ldIR6piO1jP7rKBCMbFuluqrSjPTdvZ2GCrgAw2OdN9Z3smxJidBwT/Pp5nygdjj4WjatLy07EI3tGhREKTcj1lohQIQ4V8w/OxgmvwGOWRHsEYL2m2PjGST1R3JY/aHOV5x6R4X5OUqBwJMzCt9str+x4gOEen5haEsE33G4fLDuFio0JJrTwH5+J57flABwGFeJ6xUeHvMj3trh12dB6jUOikacLaWDr1K/iiFBmQ/49+Z7erc2SrSba4m7OLM+JytVfUKOcoLliCftLpHJrq3MqsOPstNkTvOx0uQZSTJ7mlsI38vWVjl/eSznEASBgSz8yViHbJuMJdocMub07L3xHO8aWMbln9vVzUlDyD2KaeD9qIQfbVXusHpuitOMCHwuGxWARZcRPA7MzW8D/BZMq4X1FqKBaJYzHBEYbzqGaT4J1fEZ3clHpeOgcdEB8z4fQ/IbdLlTpZFO2l+ueHhPzLRVpINU9aRXCDz3VFFAnJO8PZ5CFpT1N+ixLmQb2fEhyVexHC6MOnF8nRQ630G7z5ierJOGT6MlSVmdKh504SbEPIHCimLjDq6zWFD8WqmbIjEdl5kra6NnqjllRCOpZ9gLA5EHp3ItLgeYLheipP697OxUq/wLnZqrTEtOLrbjH7+aDudlSJrvNlWau7Ar2HWst3QvwP4o2hUVtQSal8jSc7cDJr53xBdEh3Ftba0/NNB4wCh1aP2hTvXeK/wkfgWbzhJwmkeu0rjGcXVUJBqH7lFuHd79qrXyLA2YPyrewPrqC1qbtG1ivYGcD1SQrG/hX+f6ZzI3oG5r7o96dM7Y5GDfdBlfV8oSrrAkz1VQsiqviGG19jWmfoE=ff';
+const getDeviceId = () => {
+  let id = localStorage.getItem(DEVICE_KEY);
+  if (!id) { id = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : 'hax-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2); localStorage.setItem(DEVICE_KEY, id); }
+  return id;
+};
+async function haxApi(path, body) {
+  const response = await fetch(API_BASE_URL + path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(data.error || 'تعذر الاتصال بالخادم');
+  return data;
+}
+let timerInterval = null;
+let currentLang = localStorage.getItem('hax_non_root_lang') || 'ar';
+
+const translations = {
+  ar: {
+    subTitle: "مفتاحك الآمن للاتصال السريع",
+    keyLabel: "مفتاح الدخول (Nacer-XXXX_XXXX-XXXX)",
+    pasteBtn: "لصق",
+    loginBtn: "دخول النظام",
+    noKeyText: "لا تملك مفتاحاً؟ تواصل معنا عبر القناة",
+    logoutBtn: "خروج",
+    secureConnected: "متصل بأمان",
+    timerLabel: "الوقت المتبقي للجلسة",
+    activeKeyTitle: "مفتاح الدخول النشط",
+    copyBtn: "نسخ",
+    deviceLbl: "الجهاز",
+    joinLbl: "تاريخ الانضمام",
+    expiryLbl: "تاريخ الانتهاء",
+    subscribeBtn: "إضافة الاشتراك",
+    subscribeSub: "ربط مباشر مع تطبيق Happ VPN",
+    appsAndCommunity: "التطبيقات والمجتمع",
+    downloadHapp: "تحميل تطبيق HAPP",
+    downloadHappSub: "احصل على عميل Happ الرسمي",
+    telegramChannel: "قناة HAX_NON_ROOT",
+    accountSection: "الحساب",
+    copyKeyTitle: "نسخ مفتاح الدخول",
+    copyKeySub: "اضغط لنسخ مفتاحك",
+    logoutTitle: "خروج",
+    logoutSub: "مسح الجلسة المحفوظة",
+    homeTab: "الرئيسية",
+    settingsTab: "الإعدادات",
+    errEmpty: "يرجى إدخال مفتاح الدخول",
+    errFormat: "صيغة المفتاح غير صحيحة",
+    errInvalid: "مفتاح غير صالح أو منتهي الصلاحية",
+    errConn: "خطأ في الاتصال بالسيرفر",
+    checking: "⏳ جاري التحقق...",
+    pasted: "✔ تم اللصق",
+    copied: "✔ تم نسخ المفتاح",
+    launching: "🚀 جاري فتح تطبيق Happ..."
+  },
+  en: {
+    subTitle: "Your Secure Connection Key",
+    keyLabel: "Access Key (Nacer-XXXX_XXXX-XXXX)",
+    pasteBtn: "Paste",
+    loginBtn: "Login",
+    noKeyText: "Don't have a key? Contact channel",
+    logoutBtn: "Logout",
+    secureConnected: "Secure",
+    timerLabel: "Session Time Remaining",
+    activeKeyTitle: "Active Access Key",
+    copyBtn: "Copy",
+    deviceLbl: "Device",
+    joinLbl: "Joined",
+    expiryLbl: "Expires",
+    subscribeBtn: "Add Subscription",
+    subscribeSub: "Direct link with Happ VPN app",
+    appsAndCommunity: "Apps & Community",
+    downloadHapp: "Download HAPP App",
+    downloadHappSub: "Get the official Happ client",
+    telegramChannel: "HAX_NON_ROOT Channel",
+    accountSection: "Account",
+    copyKeyTitle: "Copy Access Key",
+    copyKeySub: "Click to copy your key",
+    logoutTitle: "Logout",
+    logoutSub: "Clear saved session",
+    homeTab: "Home",
+    settingsTab: "Settings",
+    errEmpty: "Please enter access key",
+    errFormat: "Invalid key format",
+    errInvalid: "Invalid or expired key",
+    errConn: "Server connection error",
+    checking: "⏳ Checking...",
+    pasted: "✔ Pasted",
+    copied: "✔ Key Copied",
+    launching: "🚀 Launching Happ..."
+  }
+};
+
+window.addEventListener('DOMContentLoaded', async () => {
+  applyLanguage(currentLang);
+  const savedData = localStorage.getItem(STORAGE_KEY);
+  if (!savedData) return;
+  try {
+    const parsed = JSON.parse(savedData);
+    if (!parsed.key || !parsed.deviceId) throw new Error('invalid_session');
+    const check = await haxApi('/api/check', { code: parsed.key });
+    if (!check.valid) throw new Error(check.reason || 'invalid_key');
+    const verified = await haxApi('/api/verify', { code: parsed.key, device_id: parsed.deviceId });
+    if (!verified.valid) throw new Error(verified.reason || 'invalid_key');
+    const expiry = Date.parse(verified.expires_at || check.expires_at);
+    const created = Date.parse(check.created_at || Date.now());
+    if (!Number.isFinite(expiry) || expiry <= Date.now()) throw new Error('expired');
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ key: parsed.key, expiry, created, deviceId: parsed.deviceId }));
+    openDashboard(parsed.key, expiry, created);
+  } catch(e) { localStorage.removeItem(STORAGE_KEY); }
+});
+
+function toggleLanguage() {
+  currentLang = currentLang === 'ar' ? 'en' : 'ar';
+  localStorage.setItem('hax_non_root_lang', currentLang);
+  applyLanguage(currentLang);
+}
+
+function applyLanguage(lang) {
+  document.documentElement.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+  document.documentElement.setAttribute('lang', lang);
+  document.getElementById('langIndicator').innerText = lang === 'ar' ? 'EN' : 'AR';
+  document.getElementById('langIndicator2').innerText = lang === 'ar' ? 'EN' : 'AR';
+
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (translations[lang][key]) {
+      el.innerText = translations[lang][key];
+    }
+  });
+}
+
+function showTab(tabName) {
+  document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+
+  if (tabName === 'home') {
+    document.getElementById('homePane').classList.add('active');
+    document.getElementById('navHome').classList.add('active');
+  } else if (tabName === 'settings') {
+    document.getElementById('settingsPane').classList.add('active');
+    document.getElementById('navSettings').classList.add('active');
+  }
+}
+
+async function pasteKeyFromClipboard() {
+  try {
+    const text = await navigator.clipboard.readText();
+    if (text) {
+      document.getElementById('accessKey').value = text.trim();
+      showToast(translations[currentLang].pasted);
+    }
+  } catch (e) {
+    showToast("⚠ Clipboard permission required");
+  }
+}
+
+function toggleKeyVisibility() {
+  const input = document.getElementById('accessKey');
+  input.type = input.type === 'password' ? 'text' : 'password';
+}
+
+// زر التشويش أو إظهار المفتاح داخل لوحة التحكم
+function toggleDisplayKeyMask() {
+  const el = document.getElementById('displayKey');
+  el.classList.toggle('blurred');
+}
+
+async function login() {
+  const key = document.getElementById('accessKey').value.trim().toUpperCase();
+  if (!key) { showError(translations[currentLang].errEmpty); return; }
+  showToast(translations[currentLang].checking);
+  try {
+    const check = await haxApi('/api/check', { code: key });
+    if (!check.valid) {
+      if (check.reason === 'maintenance') throw new Error('الخدمة تحت الصيانة حالياً');
+      if (check.reason === 'code_expired') throw new Error('الكود منتهي الصلاحية');
+      if (check.reason === 'code_disabled') throw new Error('تم إيقاف هذا الكود');
+      throw new Error(translations[currentLang].errInvalid);
+    }
+    const deviceId = getDeviceId();
+    const verified = await haxApi('/api/verify', { code: key, device_id: deviceId });
+    if (!verified.valid) {
+      if (verified.reason === 'max_devices_reached') throw new Error('تم بلوغ الحد الأقصى للأجهزة لهذا الكود');
+      if (verified.reason === 'maintenance') throw new Error('الخدمة تحت الصيانة حالياً');
+      throw new Error(translations[currentLang].errInvalid);
+    }
+    const expiryTime = Date.parse(verified.expires_at || check.expires_at);
+    const createdTime = Date.parse(check.created_at || Date.now());
+    if (!Number.isFinite(expiryTime) || expiryTime <= Date.now()) throw new Error('الكود منتهي الصلاحية');
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ key, expiry: expiryTime, created: createdTime, deviceId }));
+    openDashboard(key, expiryTime, createdTime);
+  } catch(e) { showError(e.message || translations[currentLang].errConn); }
+}
+
+function openDashboard(key, expiry, created) {
+  document.getElementById('displayKey').textContent = key;
+  
+  const options = { year: 'numeric', month: 'short', day: 'numeric' };
+  document.getElementById('activationDate').textContent = new Date(created).toLocaleDateString('en-US', options);
+  document.getElementById('expiryDate').textContent = new Date(expiry).toLocaleDateString('en-US', options);
+
+  document.getElementById('loginView').classList.remove('active');
+  document.getElementById('dashView').classList.add('active');
+
+  startCountdown(expiry);
+}
+
+function startCountdown(expiryTime) {
+  if (timerInterval) clearInterval(timerInterval);
+
+  function updateTimer() {
+    const now = Date.now();
+    const diff = expiryTime - now;
+
+    if (diff <= 0) {
+      document.getElementById('mainTimerDisplay').innerHTML = '<span>00</span><span class="timer-unit">EXPIRED</span>';
+      clearInterval(timerInterval);
+      return;
+    }
+
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+    const hStr = String(hours).padStart(2, '0');
+    const mStr = String(minutes).padStart(2, '0');
+    const sStr = String(seconds).padStart(2, '0');
+
+    document.getElementById('mainTimerDisplay').innerHTML = `
+      <span>${sStr}</span><span class="timer-unit">S</span>
+      <span>${mStr}</span><span class="timer-unit">M</span>
+      <span>${hStr}</span><span class="timer-unit">H</span>
+    `;
+  }
+
+  updateTimer();
+  timerInterval = setInterval(updateTimer, 1000);
+}
+
+function showError(msg) {
+  const el = document.getElementById('errorMsg');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 4000);
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function copyKey() {
+  const key = document.getElementById('displayKey').textContent.trim();
+  if (key && key !== '-') {
+    navigator.clipboard.writeText(key);
+    showToast(translations[currentLang].copied);
+  }
+}
+
+function logout() {
+  if (timerInterval) clearInterval(timerInterval);
+  localStorage.removeItem(STORAGE_KEY);
+  document.getElementById('dashView').classList.remove('active');
+  document.getElementById('loginView').classList.add('active');
+  document.getElementById('accessKey').value = '';
+}
+
+function launchVpnHub() {
+  showToast(translations[currentLang].launching);
+  setTimeout(() => {
+    window.location.href = HAPP_URL;
+  }, 1000);
+}
+</script>
 </body>
 </html>
