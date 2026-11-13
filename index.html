@@ -516,7 +516,8 @@ window.addEventListener('DOMContentLoaded', async () => {
     if (!parsed.key || !parsed.deviceId) throw new Error('invalid_session');
     const check = await haxApi('/api/check', { code: parsed.key });
     if (!check.valid) throw new Error(check.reason || 'invalid_key');
-    const verified = await haxApi('/api/verify', { code: parsed.key, device_id: parsed.deviceId });
+    const deviceDetails = await getDeviceDetails();
+    const verified = await haxApi('/api/verify', { code: parsed.key, device_id: parsed.deviceId, ...deviceDetails });
     if (!verified.valid) throw new Error(verified.reason || 'invalid_key');
     const expiry = Date.parse(verified.expires_at || check.expires_at);
     const created = Date.parse(check.created_at || Date.now());
@@ -595,7 +596,8 @@ async function login() {
       throw new Error(translations[currentLang].errInvalid);
     }
     const deviceId = getDeviceId();
-    const verified = await haxApi('/api/verify', { code: key, device_id: deviceId });
+    const deviceDetails = await getDeviceDetails();
+    const verified = await haxApi('/api/verify', { code: key, device_id: deviceId, ...deviceDetails });
     if (!verified.valid) {
       if (verified.reason === 'max_devices_reached') throw new Error('تم بلوغ الحد الأقصى للأجهزة لهذا الكود');
       if (verified.reason === 'maintenance') throw new Error('الخدمة تحت الصيانة حالياً');
@@ -607,6 +609,28 @@ async function login() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify({ key, expiry: expiryTime, created: createdTime, deviceId }));
     openDashboard(key, expiryTime, createdTime);
   } catch(e) { showError(e.message || translations[currentLang].errConn); }
+}
+
+async function getDeviceDetails() {
+  const ua = navigator.userAgent || '';
+  let model = '';
+  let platform = navigator.userAgentData?.platform || navigator.platform || '';
+  try {
+    if (navigator.userAgentData?.getHighEntropyValues) {
+      const hints = await navigator.userAgentData.getHighEntropyValues(['model', 'platform']);
+      model = String(hints.model || '').trim();
+      platform = String(hints.platform || platform || '').trim();
+    }
+  } catch (_) {}
+  if (!model) {
+    const androidMatch = ua.match(/Android[^;)]*;\\s*([^;)]+?)(?:\\s+Build\\/[^;)]+)?[;)]/i);
+    if (androidMatch && !/^(?:K|wv|mobile)$/i.test(androidMatch[1].trim())) model = androidMatch[1].trim();
+    else if (/iPhone/i.test(ua)) model = 'iPhone (الموديل الدقيق مخفي من iOS)';
+    else if (/iPad/i.test(ua)) model = 'iPad (الموديل الدقيق مخفي من iOS)';
+    else if (/Windows/i.test(ua)) model = 'كمبيوتر Windows (الموديل غير متاح من المتصفح)';
+    else if (/Macintosh|Mac OS X/i.test(ua)) model = 'Mac (الموديل غير متاح من المتصفح)';
+  }
+  return { device_model: model || 'الموديل غير متاح من المتصفح', device_platform: platform || 'غير معروف' };
 }
 
 function detectDeviceLabel() {
