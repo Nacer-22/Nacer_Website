@@ -245,6 +245,33 @@ body::before{
  .info-sub-card .val{font-size:.61rem}
 }
 
+
+/* Horizontal segmented subscription-duration meter */
+.duration-panel{
+ width:min(100%,390px);height:auto;min-height:0;aspect-ratio:auto;
+ border-radius:18px;padding:25px 22px 22px;gap:0;
+ background:linear-gradient(145deg,rgba(26,10,16,.97),rgba(8,10,15,.98));
+ border:1px solid rgba(255,48,69,.34);
+ box-shadow:0 18px 48px rgba(0,0,0,.48),0 0 34px rgba(185,9,34,.13),inset 0 1px 0 rgba(255,255,255,.055);
+}
+.duration-panel::before{inset:9px;border-radius:12px;border:1px solid rgba(255,255,255,.045)}
+.duration-panel .circle-content{width:100%;padding:0;position:relative}
+.duration-panel .circle-logo-title{margin:0 0 23px}
+.duration-panel .circle-logo-title .c2{font-size:.88rem;letter-spacing:3px;color:#ff6575}
+.duration-progress{width:100%;max-width:330px;margin:0 auto 18px}
+.duration-bars{display:grid;grid-template-columns:repeat(20,minmax(0,1fr));gap:5px;margin:0 auto}
+.duration-bars .duration-segment{height:8px;border-radius:3px;background:rgba(255,255,255,.085);border:1px solid rgba(255,255,255,.035);transition:background .25s ease,box-shadow .25s ease}
+.duration-bars .duration-segment.filled{background:linear-gradient(90deg,#8c0a20,#ff304b);border-color:rgba(255,91,111,.5);box-shadow:0 0 8px rgba(239,24,55,.3)}
+.duration-progress-meta{display:flex;align-items:center;justify-content:space-between;margin-top:10px;color:#9ca6b3;font:700 .68rem 'Cairo',sans-serif;letter-spacing:.4px}
+.duration-progress-meta strong{font:800 .72rem 'Orbitron',sans-serif;color:#ff6276}
+.duration-panel .circle-timer-box{margin:0 auto;font-size:1.35rem}
+.duration-panel .circle-timer-label{margin-top:9px;font-size:.72rem;letter-spacing:.2px}
+@media(max-width:360px){
+ .duration-panel{padding:20px 15px}
+ .duration-bars{gap:3px}
+ .duration-bars .duration-segment{height:7px}
+}
+
 </style>
 </head>
 <body>
@@ -296,10 +323,10 @@ body::before{
       <!-- القسم الأول: الرئيسية -->
       <div id="homePane" class="pane active">
         <div class="dash-hero-container">
-          <div class="dashed-circle-outer">
-            <svg class="dashed-svg-ring" viewBox="0 0 100 100"><circle cx="50" cy="50" r="44"/></svg>
+          <div class="dashed-circle-outer duration-panel">
             <div class="circle-content">
-              <div class="circle-logo-title"><span class="c1">HAX_NON_ROOT</span><span class="c2">CLIENT</span></div>
+              <div class="circle-logo-title"><span class="c1">HAX_NON_ROOT</span><span class="c2">Nacer_22</span></div>
+              <div class="duration-progress" aria-label="مدة الاشتراك المتبقية"><div id="timeProgressBars" class="duration-bars"></div><div class="duration-progress-meta"><span>مدة المفتاح</span><strong id="timeProgressPercent">100%</strong></div></div>
               <div id="mainTimerDisplay" class="circle-timer-box">
                 <span>00</span><span class="timer-unit">S</span>
                 <span>00</span><span class="timer-unit">M</span>
@@ -598,10 +625,28 @@ function openDashboard(key, expiry, created) {
   document.getElementById('loginView').classList.remove('active');
   document.getElementById('dashView').classList.add('active');
 
-  startCountdown(expiry);
+  startCountdown(expiry, created);
 }
 
-function startCountdown(expiryTime) {
+
+function updateDurationMeter(ratio) {
+  const container = document.getElementById('timeProgressBars');
+  const percentLabel = document.getElementById('timeProgressPercent');
+  if (!container || !percentLabel) return;
+  const totalSegments = 80;
+  if (!container.dataset.ready) {
+    container.innerHTML = Array.from({length: totalSegments}, () => '<span class="duration-segment"></span>').join('');
+    container.dataset.ready = '1';
+  }
+  const percent = Math.round(Math.max(0, Math.min(1, Number(ratio) || 0)) * 100);
+  const filled = Math.round((percent / 100) * totalSegments);
+  Array.from(container.children).forEach((segment, index) => {
+    segment.classList.toggle('filled', index < filled);
+  });
+  percentLabel.textContent = percent + '%';
+}
+
+function startCountdown(expiryTime, startTime) {
   if (timerInterval) clearInterval(timerInterval);
 
   function updateTimer() {
@@ -610,9 +655,14 @@ function startCountdown(expiryTime) {
 
     if (diff <= 0) {
       document.getElementById('mainTimerDisplay').innerHTML = '<span>00</span><span class="timer-unit">EXPIRED</span>';
+      updateDurationMeter(0);
       clearInterval(timerInterval);
       return;
     }
+
+    const totalDuration = Number(expiryTime) - Number(startTime);
+    const remainingRatio = Number.isFinite(totalDuration) && totalDuration > 0 ? Math.max(0, Math.min(1, diff / totalDuration)) : 1;
+    updateDurationMeter(remainingRatio);
 
     const hours = Math.floor(diff / (1000 * 60 * 60));
     const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
