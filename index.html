@@ -246,31 +246,22 @@ body::before{
 }
 
 
-/* Horizontal segmented subscription-duration meter */
-.duration-panel{
- width:min(100%,390px);height:auto;min-height:0;aspect-ratio:auto;
- border-radius:18px;padding:25px 22px 22px;gap:0;
- background:linear-gradient(145deg,rgba(26,10,16,.97),rgba(8,10,15,.98));
- border:1px solid rgba(255,48,69,.34);
- box-shadow:0 18px 48px rgba(0,0,0,.48),0 0 34px rgba(185,9,34,.13),inset 0 1px 0 rgba(255,255,255,.055);
-}
-.duration-panel::before{inset:9px;border-radius:12px;border:1px solid rgba(255,255,255,.045)}
-.duration-panel .circle-content{width:100%;padding:0;position:relative}
-.duration-panel .circle-logo-title{margin:0 0 23px}
-.duration-panel .circle-logo-title .c2{font-size:.88rem;letter-spacing:3px;color:#ff6575}
-.duration-progress{width:100%;max-width:330px;margin:0 auto 18px}
-.duration-bars{display:grid;grid-template-columns:repeat(20,minmax(0,1fr));gap:5px;margin:0 auto}
-.duration-bars .duration-segment{height:8px;border-radius:3px;background:rgba(255,255,255,.085);border:1px solid rgba(255,255,255,.035);transition:background .25s ease,box-shadow .25s ease}
-.duration-bars .duration-segment.filled{background:linear-gradient(90deg,#8c0a20,#ff304b);border-color:rgba(255,91,111,.5);box-shadow:0 0 8px rgba(239,24,55,.3)}
-.duration-progress-meta{display:flex;align-items:center;justify-content:space-between;margin-top:10px;color:#9ca6b3;font:700 .68rem 'Cairo',sans-serif;letter-spacing:.4px}
-.duration-progress-meta strong{font:800 .72rem 'Orbitron',sans-serif;color:#ff6276}
-.duration-panel .circle-timer-box{margin:0 auto;font-size:1.35rem}
-.duration-panel .circle-timer-label{margin-top:9px;font-size:.72rem;letter-spacing:.2px}
-@media(max-width:360px){
- .duration-panel{padding:20px 15px}
- .duration-bars{gap:3px}
- .duration-bars .duration-segment{height:7px}
-}
+/* Circular segmented countdown dial: red ticks fill clockwise as time elapses */
+.duration-panel{position:relative;width:min(88vw,330px);height:auto;aspect-ratio:1/1;min-height:0;border-radius:50%;padding:0;display:flex;align-items:center;justify-content:center;overflow:visible;background:radial-gradient(circle at 50% 46%,rgba(105,7,23,.24),rgba(12,10,15,.97) 66%,rgba(5,6,9,.99) 100%);border:1px solid rgba(255,48,69,.19);box-shadow:0 18px 50px rgba(0,0,0,.5),0 0 45px rgba(190,8,34,.12),inset 0 0 45px rgba(255,30,55,.035)}
+.duration-panel::before{content:"";position:absolute;inset:8px;border:1px solid rgba(255,255,255,.055);border-radius:50%;pointer-events:none}
+.duration-dial{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.duration-dial .dial-track{fill:none;stroke:rgba(126,132,146,.32);stroke-width:5;stroke-dasharray:2 10;stroke-linecap:butt}
+.duration-dial .dial-tick{stroke:rgba(112,119,132,.43);stroke-width:3.2;stroke-linecap:square;transition:stroke .18s ease,filter .18s ease}
+.duration-dial .dial-tick.active{stroke:#f12642;filter:drop-shadow(0 0 4px rgba(255,31,60,.72))}
+.duration-dial .dial-tick.major{stroke-width:4.4}
+.duration-center{position:relative;z-index:1;width:76%;padding:0;text-align:center}
+.duration-panel .circle-logo-title{margin:0 0 24px}
+.duration-panel .circle-logo-title .c1{font-size:clamp(.9rem,4.5vw,1.18rem);letter-spacing:1.2px}
+.duration-panel .circle-logo-title .c2{font-size:.78rem;letter-spacing:3px;color:#ff6575;margin-top:7px}
+.duration-panel .circle-timer-box{font-size:clamp(1.05rem,5vw,1.42rem);gap:4px;text-shadow:0 3px 18px rgba(255,255,255,.15)}
+.duration-panel .timer-unit{font-size:.58rem;color:#ff6477}
+.duration-panel .circle-timer-label{font-size:.7rem;color:#9ca6b3;margin-top:13px;letter-spacing:.2px}
+@media(max-width:360px){.duration-panel{width:min(88vw,300px)}.duration-panel .circle-logo-title{margin-bottom:18px}.duration-center{width:80%}}
 
 </style>
 </head>
@@ -324,9 +315,12 @@ body::before{
       <div id="homePane" class="pane active">
         <div class="dash-hero-container">
           <div class="dashed-circle-outer duration-panel">
-            <div class="circle-content">
+            <svg class="duration-dial" viewBox="0 0 320 320" role="img" aria-label="مؤشر مدة الاشتراك">
+              <circle class="dial-track" cx="160" cy="160" r="137"></circle>
+              <g id="timeProgressTicks"></g>
+            </svg>
+            <div class="circle-content duration-center">
               <div class="circle-logo-title"><span class="c1">HAX_NON_ROOT</span><span class="c2">Nacer_22</span></div>
-              <div class="duration-progress" aria-label="مدة الاشتراك المتبقية"><div id="timeProgressBars" class="duration-bars"></div><div class="duration-progress-meta"><span>مدة المفتاح</span><strong id="timeProgressPercent">100%</strong></div></div>
               <div id="mainTimerDisplay" class="circle-timer-box">
                 <span>00</span><span class="timer-unit">S</span>
                 <span>00</span><span class="timer-unit">M</span>
@@ -630,20 +624,31 @@ function openDashboard(key, expiry, created) {
 
 
 function updateDurationMeter(ratio) {
-  const container = document.getElementById('timeProgressBars');
-  const percentLabel = document.getElementById('timeProgressPercent');
-  if (!container || !percentLabel) return;
-  const totalSegments = 80;
+  const container = document.getElementById('timeProgressTicks');
+  if (!container) return;
+  const totalTicks = 60;
   if (!container.dataset.ready) {
-    container.innerHTML = Array.from({length: totalSegments}, () => '<span class="duration-segment"></span>').join('');
+    const ns = 'http://www.w3.org/2000/svg';
+    for (let i = 0; i < totalTicks; i++) {
+      const angle = (i / totalTicks) * Math.PI * 2 - Math.PI / 2;
+      const major = i % 5 === 0;
+      const inner = major ? 126 : 130;
+      const outer = major ? 145 : 141;
+      const line = document.createElementNS(ns, 'line');
+      line.setAttribute('x1', (160 + Math.cos(angle) * inner).toFixed(2));
+      line.setAttribute('y1', (160 + Math.sin(angle) * inner).toFixed(2));
+      line.setAttribute('x2', (160 + Math.cos(angle) * outer).toFixed(2));
+      line.setAttribute('y2', (160 + Math.sin(angle) * outer).toFixed(2));
+      line.setAttribute('class', 'dial-tick' + (major ? ' major' : ''));
+      container.appendChild(line);
+    }
     container.dataset.ready = '1';
   }
-  const percent = Math.round(Math.max(0, Math.min(1, Number(ratio) || 0)) * 100);
-  const filled = Math.round((percent / 100) * totalSegments);
-  Array.from(container.children).forEach((segment, index) => {
-    segment.classList.toggle('filled', index < filled);
+  const elapsed = Math.max(0, Math.min(1, Number(ratio) || 0));
+  const activeTicks = Math.round(elapsed * totalTicks);
+  Array.from(container.children).forEach((tick, index) => {
+    tick.classList.toggle('active', index < activeTicks);
   });
-  percentLabel.textContent = percent + '%';
 }
 
 function startCountdown(expiryTime, startTime) {
@@ -655,14 +660,14 @@ function startCountdown(expiryTime, startTime) {
 
     if (diff <= 0) {
       document.getElementById('mainTimerDisplay').innerHTML = '<span>00</span><span class="timer-unit">EXPIRED</span>';
-      updateDurationMeter(0);
+      updateDurationMeter(1);
       clearInterval(timerInterval);
       return;
     }
 
     const totalDuration = Number(expiryTime) - Number(startTime);
-    const remainingRatio = Number.isFinite(totalDuration) && totalDuration > 0 ? Math.max(0, Math.min(1, diff / totalDuration)) : 1;
-    updateDurationMeter(remainingRatio);
+    const elapsedRatio = Number.isFinite(totalDuration) && totalDuration > 0 ? Math.max(0, Math.min(1, 1 - (diff / totalDuration))) : 0;
+    updateDurationMeter(elapsedRatio);
 
     const hours = Math.floor(diff / (1000 * 60 * 60));
     const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
