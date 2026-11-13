@@ -474,6 +474,165 @@ body::after{
  *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 }
 
+
+/* ===== Signature login experience: HAX_NON_ROOT ===== */
+#loginView{
+ position:relative;isolation:isolate;overflow:hidden;
+ background:
+  radial-gradient(ellipse at 50% 39%,rgba(151,14,48,.19),transparent 35%),
+  radial-gradient(ellipse at 4% 70%,rgba(23,86,111,.12),transparent 34%),
+  radial-gradient(ellipse at 100% 12%,rgba(112,27,83,.12),transparent 30%);
+}
+#loginView::before{
+ content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+ background:
+  linear-gradient(rgba(164,177,198,.035) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(164,177,198,.035) 1px,transparent 1px);
+ background-size:34px 34px;
+ mask-image:linear-gradient(to bottom,transparent 2%,#000 22%,#000 78%,transparent 100%);
+}
+#loginView::after{
+ content:"";position:absolute;z-index:-1;pointer-events:none;
+ width:310px;height:310px;border:1px solid rgba(255,74,105,.10);
+ border-radius:50%;top:18%;left:50%;transform:translateX(-50%);
+ box-shadow:0 0 0 13px rgba(255,74,105,.018),0 0 0 29px rgba(255,74,105,.014),0 0 90px rgba(194,15,59,.10);
+}
+#loginView .top-header{
+ flex:0 0 auto;margin:0 0 10px;padding:8px 2px 14px;
+ border-bottom:1px solid rgba(255,255,255,.075);
+}
+#loginView .top-header::after{
+ content:"";position:absolute;bottom:-1px;right:0;width:88px;height:1px;
+ background:linear-gradient(90deg,transparent,#ff5875);
+ box-shadow:0 0 12px rgba(255,65,98,.55);
+}
+#loginView .top-header>div{
+ color:#aab5c5!important;letter-spacing:1.5px;
+}
+#loginView .lang-btn{
+ min-width:74px;min-height:44px;border-radius:12px;
+ background:linear-gradient(145deg,rgba(26,30,42,.94),rgba(9,11,18,.98));
+ border:1px solid rgba(255,86,113,.36);
+ box-shadow:inset 0 1px rgba(255,255,255,.07),0 8px 22px rgba(0,0,0,.22);
+}
+#loginView .form-section{
+ position:relative;width:100%;margin:auto 0;padding:clamp(18px,4vh,34px) 0;
+}
+#loginView .brand{
+ position:relative;isolation:isolate;overflow:hidden;
+ margin:0 0 28px;padding:clamp(28px,6vh,48px) 15px 27px;
+ border:1px solid rgba(255,84,112,.24);border-radius:24px;
+ background:
+  radial-gradient(ellipse at 50% 0%,rgba(194,21,59,.18),transparent 63%),
+  linear-gradient(145deg,rgba(20,24,35,.97),rgba(8,10,17,.96));
+ box-shadow:0 24px 55px rgba(0,0,0,.40),0 0 34px rgba(190,17,55,.09),inset 0 1px rgba(255,255,255,.09);
+}
+#loginView .brand::before{
+ content:"";position:absolute;z-index:-1;top:-82px;left:50%;transform:translateX(-50%);
+ width:190px;height:190px;border-radius:50%;
+ border:1px solid rgba(255,91,119,.18);
+ box-shadow:0 0 0 12px rgba(255,91,119,.025),0 0 0 27px rgba(255,91,119,.018),0 0 55px rgba(215,24,67,.13);
+}
+#loginView .brand::after{
+ content:"";position:absolute;bottom:0;left:12%;right:12%;height:1px;
+ background:linear-gradient(90deg,transparent,rgba(255,77,108,.8),rgba(90,179,204,.45),transparent);
+}
+#loginView .logo-title{
+ display:flex;flex-direction:column;align-items:center;gap:9px;
+}
+#loginView .logo-title .l1{
+ font-size:clamp(1.7rem,7.4vw,2.35rem);letter-spacing:2px;
+ text-shadow:0 5px 26px rgba(255,255,255,.16);
+}
+#loginView .logo-title .l2{
+ display:inline-flex;align-items:center;justify-content:center;
+ min-width:150px;padding:5px 18px 7px;
+ color:#ff637e;font-size:1.12rem;letter-spacing:5px;
+ border-top:1px solid rgba(255,94,123,.36);
+ border-bottom:1px solid rgba(255,94,123,.36);
+ text-shadow:0 0 22px rgba(255,55,93,.38);
+}
+#loginView .brand-sub{
+ margin-top:18px;color:#aab6c7;font-size:.86rem;letter-spacing:.25px;
+}
+#loginView .input-label{
+ margin:0 3px 10px;color:#ff7189;font-size:.83rem;font-weight:800;
+ letter-spacing:.2px;
+}
+#loginView .cyber-input-wrapper{
+ min-height:68px;margin-bottom:16px;padding:7px;gap:7px;
+ border-radius:17px;
+ background:linear-gradient(145deg,rgba(22,26,37,.98),rgba(8,10,16,.99));
+ border:1px solid rgba(255,82,109,.34);
+ box-shadow:inset 0 2px 16px rgba(0,0,0,.46),0 14px 32px rgba(0,0,0,.25);
+ transition:border-color .22s,box-shadow .22s,transform .22s;
+}
+#loginView .cyber-input-wrapper:focus-within{
+ border-color:rgba(255,91,119,.88);
+ box-shadow:0 0 0 3px rgba(255,72,104,.10),0 0 30px rgba(208,20,61,.16),inset 0 2px 14px rgba(0,0,0,.38);
+}
+#loginView .action-btn-group{gap:6px}
+#loginView .input-field{
+ min-width:0;font-size:.85rem;letter-spacing:1.1px;
+}
+#loginView .icon-btn,#loginView .paste-btn{
+ min-height:48px;min-width:48px;padding:0 12px;border-radius:12px;
+ background:linear-gradient(145deg,rgba(37,30,42,.98),rgba(15,16,24,.98));
+ border:1px solid rgba(255,88,115,.35);
+ box-shadow:inset 0 1px rgba(255,255,255,.06);
+ transition:transform .2s,border-color .2s,box-shadow .2s;
+}
+#loginView .icon-btn:hover,#loginView .paste-btn:hover{
+ transform:translateY(-2px);border-color:#ff7189;
+ box-shadow:0 8px 20px rgba(202,19,58,.19);
+}
+#loginView .btn-primary{
+ position:relative;overflow:hidden;min-height:66px;margin-top:4px;
+ border-radius:16px;border:1px solid rgba(255,151,169,.58);
+ background:linear-gradient(112deg,#760f29 0%,#b9163a 43%,#f02d50 100%);
+ box-shadow:0 17px 36px rgba(145,8,42,.30),inset 0 1px rgba(255,255,255,.22);
+ letter-spacing:.3px;font-size:1.02rem;
+ transition:transform .22s,box-shadow .22s,filter .22s;
+}
+#loginView .btn-primary::before{
+ content:"";position:absolute;top:-70%;left:-45%;width:28%;height:240%;
+ transform:rotate(24deg);
+ background:linear-gradient(90deg,transparent,rgba(255,255,255,.20),transparent);
+ transition:left .7s;pointer-events:none;
+}
+#loginView .btn-primary:hover::before{left:125%}
+#loginView .btn-primary:hover{
+ transform:translateY(-2px);filter:brightness(1.06);
+ box-shadow:0 21px 42px rgba(145,8,42,.39),inset 0 1px rgba(255,255,255,.22);
+}
+#loginView .btn-primary:active{transform:translateY(0) scale(.99)}
+#loginView .error-msg{padding:0 5px;margin:-5px 0 9px;font-size:.78rem}
+#loginView .footer-contact{
+ margin-top:24px;line-height:2.15;text-align:center;
+ color:#9ba8ba;font-size:.79rem;
+}
+#loginView .footer-contact span:last-child{
+ display:inline-block;margin-top:3px;color:#ff637e;
+ font-family:'Orbitron','Cairo',sans-serif;font-weight:900;
+ letter-spacing:1.7px;text-shadow:0 0 18px rgba(255,57,94,.3);
+}
+@media(max-width:390px){
+ #loginView .form-section{padding:12px 0}
+ #loginView .brand{padding:25px 10px 22px;margin-bottom:22px}
+ #loginView .cyber-input-wrapper{min-height:61px}
+ #loginView .btn-primary{min-height:60px}
+}
+@media(max-height:740px){
+ #loginView .form-section{padding:8px 0}
+ #loginView .brand{padding:20px 12px 17px;margin-bottom:17px}
+ #loginView .brand-sub{margin-top:12px}
+ #loginView .cyber-input-wrapper{min-height:58px}
+ #loginView .footer-contact{margin-top:14px}
+}
+@media(prefers-reduced-motion:reduce){
+ #loginView *,#loginView *::before,#loginView *::after{transition:none!important}
+}
+
 </style>
 </head>
 <body>
@@ -489,7 +648,7 @@ body::after{
       <div class="brand">
         <div class="logo-title">
           <span class="l1">HAX_NON_ROOT</span>
-          <span class="l2">CLIENT</span>
+          <span class="l2">Nacer_22</span>
         </div>
         <div class="brand-sub" data-i18n="subTitle">مفتاحك الآمن للاتصال السريع</div>
       </div>
