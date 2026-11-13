@@ -609,8 +609,21 @@ async function login() {
   } catch(e) { showError(e.message || translations[currentLang].errConn); }
 }
 
+function detectDeviceLabel() {
+  const ua = navigator.userAgent || '';
+  const platform = navigator.userAgentData?.platform || navigator.platform || '';
+  if (/iPad|iPhone|iPod/i.test(ua) || (platform === 'MacIntel' && navigator.maxTouchPoints > 1)) return 'iPhone / iPad';
+  if (/Android/i.test(ua)) return 'Android';
+  if (/Windows/i.test(ua) || /Win/i.test(platform)) return 'Windows';
+  if (/CrOS/i.test(ua)) return 'ChromeOS';
+  if (/Mac OS X|Macintosh/i.test(ua) || /Mac/i.test(platform)) return 'macOS';
+  if (/Linux/i.test(ua) || /Linux/i.test(platform)) return 'Linux';
+  return 'غير معروف';
+}
+
 function openDashboard(key, expiry, created) {
   document.getElementById('displayKey').textContent = key;
+  document.getElementById('deviceOs').textContent = detectDeviceLabel();
   
   const options = { year: 'numeric', month: 'short', day: 'numeric' };
   document.getElementById('activationDate').textContent = new Date(created).toLocaleDateString('en-US', options);
