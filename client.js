@@ -20,7 +20,7 @@ let currentLang = localStorage.getItem('hax_non_root_lang') || 'ar';
 const translations = {
   ar: {
     subTitle: "مفتاحك الآمن للاتصال السريع",
-    keyLabel: "مفتاح الدخول (Nacer-XXXX_XXXX-XXXX)",
+    keyLabel: "مفتاح الدخول (Nacer-XXXXXXXX_XXXXXXXX-XXXXXXXX)",
     pasteBtn: "لصق",
     loginBtn: "دخول النظام",
     noKeyText: "لا تملك مفتاحاً؟ تواصل معنا عبر القناة",
@@ -57,7 +57,7 @@ const translations = {
   },
   en: {
     subTitle: "Your Secure Connection Key",
-    keyLabel: "Access Key (Nacer-XXXX_XXXX-XXXX)",
+    keyLabel: "Access Key (Nacer-XXXXXXXX_XXXXXXXX-XXXXXXXX)",
     pasteBtn: "Paste",
     loginBtn: "Login",
     noKeyText: "Don't have a key? Contact channel",
