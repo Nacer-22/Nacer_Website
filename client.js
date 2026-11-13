@@ -112,7 +112,10 @@ const translations = {
 };
 
 window.addEventListener('DOMContentLoaded', async () => {
+  await refreshClientMaintenance();
+  setInterval(refreshClientMaintenance, 12000);
   applyLanguage(currentLang);
+  if (haxClientMaintenance) return;
   const savedData = localStorage.getItem(STORAGE_KEY);
   if (!savedData) return;
   try {
