@@ -623,7 +623,7 @@ async function getDeviceDetails() {
     }
   } catch (_) {}
   if (!model) {
-    const androidMatch = ua.match(/Android[^;)]*;\\s*([^;)]+?)(?:\\s+Build\\/[^;)]+)?[;)]/i);
+        const androidMatch = ua.match(/Android[^;)]*;\s*([^;)]+?)(?:\s+Build\/[^;)]+)?[;)]/i);
     if (androidMatch && !/^(?:K|wv|mobile)$/i.test(androidMatch[1].trim())) model = androidMatch[1].trim();
     else if (/iPhone/i.test(ua)) model = 'iPhone (الموديل الدقيق مخفي من iOS)';
     else if (/iPad/i.test(ua)) model = 'iPad (الموديل الدقيق مخفي من iOS)';
