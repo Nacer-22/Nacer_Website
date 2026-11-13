@@ -17,6 +17,23 @@ async function haxApi(path, body) {
 let timerInterval = null;
 let currentLang = localStorage.getItem('hax_non_root_lang') || 'ar';
 
+let haxClientMaintenance = false;
+async function refreshClientMaintenance() {
+  try {
+    const response = await fetch(API_BASE_URL.replace(/\\/+$/, '') + '/api/public/maintenance', { cache: 'no-store' });
+    if (!response.ok) return;
+    const data = await response.json();
+    haxClientMaintenance = !!(data.maintenance && data.maintenance.client);
+    const screen = document.getElementById('haxMaintenanceScreen');
+    const app = document.querySelector('.app-container');
+    if (screen) screen.style.display = haxClientMaintenance ? 'flex' : 'none';
+    if (app) app.style.display = haxClientMaintenance ? 'none' : '';
+  } catch (_) {
+    // Fail open if the status endpoint is temporarily unreachable.
+  }
+}
+
+
 const translations = {
   ar: {
     subTitle: "مفتاحك الآمن للاتصال السريع",
