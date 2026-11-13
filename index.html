@@ -663,7 +663,7 @@ body::after{
   <!-- ================= صفحة تسجيل الدخول ================= -->
   <section id="loginView" class="view active">
     <div class="top-header">
-      <div style="font-size:0.75rem; color:var(--muted); font-weight:800; font-family:'Orbitron';">24 ms</div>
+      <div id="connectionLatency" role="status" aria-live="polite" title="زمن الاستجابة الحقيقي إلى الخادم" style="font-size:0.75rem; color:var(--muted); font-weight:800; font-family:'Orbitron'; direction:ltr; white-space:nowrap;">قياس...</div>
       <button class="lang-btn" onclick="toggleLanguage()">🌐 <span id="langIndicator">EN</span></button>
     </div>
     <div class="form-section">
@@ -1184,6 +1184,49 @@ function launchVpnHub() {
     window.location.href = HAPP_URL;
   }, 1000);
 }
+
+
+// Measure real round-trip latency to the HAX service health endpoint.
+// This reports server response time (ping), not download bandwidth.
+let haxLatencyTimer = null;
+let haxLatencyBusy = false;
+async function updateConnectionLatency() {
+  const el = document.getElementById('connectionLatency');
+  if (!el || haxLatencyBusy || document.visibilityState === 'hidden') return;
+  haxLatencyBusy = true;
+  const started = performance.now();
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 7000);
+  try {
+    await fetch(API_BASE_URL.replace(/\/+$/, '') + '/health?ping=' + Date.now(), {
+      method: 'GET',
+      mode: 'no-cors',
+      cache: 'no-store',
+      signal: controller.signal
+    });
+    const elapsed = Math.max(1, Math.round(performance.now() - started));
+    el.textContent = elapsed + ' ms';
+    el.style.color = elapsed < 120 ? '#16d6a0' : elapsed < 300 ? '#ffbd59' : '#ff7185';
+    el.title = 'زمن الاستجابة إلى خادم HAX: ' + elapsed + ' مللي ثانية';
+  } catch (error) {
+    el.textContent = '— ms';
+    el.style.color = '#9ba8ba';
+    el.title = 'تعذر قياس زمن الاستجابة إلى الخادم';
+  } finally {
+    clearTimeout(timeout);
+    haxLatencyBusy = false;
+  }
+}
+function startConnectionLatencyMonitor() {
+  updateConnectionLatency();
+  if (haxLatencyTimer) clearInterval(haxLatencyTimer);
+  haxLatencyTimer = setInterval(updateConnectionLatency, 20000);
+}
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') updateConnectionLatency();
+});
+
+startConnectionLatencyMonitor();
 </script>
 </body>
 </html>
