@@ -667,6 +667,88 @@ body::after{
 #haxMaintenanceScreen p{color:#b9c3d1;line-height:1.9;font-size:.94rem}
 #haxMaintenanceScreen .maintenance-caption{margin-top:22px;color:#ff7189;font-size:.72rem;font-weight:900;letter-spacing:2px}
 
+
+/* ===== HAX VISUAL POLISH LAYER 2026 — visual-only additions ===== */
+@keyframes haxAmbientGlow{
+  0%{filter:brightness(1)}
+  50%{filter:brightness(1.035)}
+  100%{filter:brightness(1)}
+}
+@keyframes haxBrandPulse{
+  0%,100%{box-shadow:0 24px 55px rgba(0,0,0,.40),0 0 28px rgba(190,17,55,.08),inset 0 1px rgba(255,255,255,.09)}
+  50%{box-shadow:0 24px 55px rgba(0,0,0,.40),0 0 42px rgba(255,38,76,.19),inset 0 1px rgba(255,255,255,.13)}
+}
+@keyframes haxTextShine{
+  0%,18%{background-position:120% 50%}
+  58%,100%{background-position:-30% 50%}
+}
+@keyframes haxSurfaceSweep{
+  0%,72%{left:-75%;opacity:0}
+  76%{opacity:.65}
+  90%{left:135%;opacity:.18}
+  91%,100%{left:135%;opacity:0}
+}
+@keyframes haxStatusPulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(32,217,154,.0),0 0 9px rgba(32,217,154,.58)}
+  50%{box-shadow:0 0 0 5px rgba(32,217,154,.07),0 0 17px rgba(32,217,154,.8)}
+}
+.app-container{animation:haxAmbientGlow 12s ease-in-out infinite}
+#loginView .brand{animation:haxBrandPulse 7s ease-in-out infinite}
+#loginView .logo-title .l1{
+  background:linear-gradient(105deg,#fff 0%,#fff 34%,#ffc8d1 47%,#fff 59%,#fff 100%);
+  background-size:220% 100%;
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;color:transparent;
+  animation:haxTextShine 8s ease-in-out infinite;
+}
+#loginView .logo-title .l2{
+  text-shadow:0 0 12px rgba(255,55,93,.32),0 0 28px rgba(255,55,93,.22);
+  animation:haxAmbientGlow 5s ease-in-out infinite;
+}
+.status-dot{animation:haxStatusPulse 2.8s ease-in-out infinite}
+.cyber-card,.info-sub-card,.menu-card-item,.bottom-nav{
+  position:relative;overflow:hidden;
+  transition:transform .28s ease,border-color .28s ease,box-shadow .28s ease,filter .28s ease;
+}
+.cyber-card::after,.info-sub-card::after,.menu-card-item::after,.bottom-nav::after{
+  content:"";position:absolute;top:-125%;left:-75%;width:38%;height:350%;
+  pointer-events:none;z-index:2;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.10),rgba(255,190,200,.08),transparent);
+  transform:rotate(23deg);
+  animation:haxSurfaceSweep 10s ease-in-out infinite;
+}
+.cyber-card:hover,.info-sub-card:hover,.menu-card-item:hover{
+  transform:translateY(-3px);
+  border-color:rgba(255,92,116,.58);
+  box-shadow:0 18px 42px rgba(0,0,0,.42),0 0 22px rgba(221,19,53,.13);
+  filter:brightness(1.08);
+}
+.btn-primary,.inject-banner-btn{
+  position:relative;isolation:isolate;
+  box-shadow:0 14px 34px rgba(145,8,42,.30),0 0 22px rgba(255,38,76,.12),inset 0 1px rgba(255,255,255,.18);
+  transition:transform .24s ease,filter .24s ease,box-shadow .24s ease;
+}
+.btn-primary:hover,.inject-banner-btn:hover{
+  filter:brightness(1.12) saturate(1.08);
+  box-shadow:0 18px 42px rgba(145,8,42,.40),0 0 30px rgba(255,38,76,.23),inset 0 1px rgba(255,255,255,.22);
+}
+.lang-btn,.logout-btn,.icon-btn,.paste-btn,.nav-btn{
+  transition:transform .22s ease,background .22s ease,border-color .22s ease,color .22s ease,box-shadow .22s ease;
+}
+.lang-btn:active,.logout-btn:active,.icon-btn:active,.paste-btn:active,.nav-btn:active,.btn-primary:active,.inject-banner-btn:active{
+  transform:scale(.97);
+}
+#loginView .cyber-input-wrapper:focus-within{
+  box-shadow:0 0 0 3px rgba(255,72,104,.12),0 0 34px rgba(255,35,75,.22),inset 0 2px 14px rgba(0,0,0,.38);
+}
+.bottom-nav{backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+@media(prefers-reduced-motion:reduce){
+  .app-container,#loginView .brand,#loginView .logo-title .l1,#loginView .logo-title .l2,.status-dot,
+  .cyber-card::after,.info-sub-card::after,.menu-card-item::after,.bottom-nav::after{
+    animation:none!important;
+  }
+}
+
 </style>
 </head>
 <body>
