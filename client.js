@@ -8,8 +8,42 @@ const getDeviceId = () => {
   if (!id) { id = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : 'hax-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2); localStorage.setItem(DEVICE_KEY, id); }
   return id;
 };
+async function fetchWithTimeout(url, options = {}, timeoutMs = 15000) {
+  let controller = null;
+  let timeoutId = null;
+  const requestOptions = { ...options };
+  if (typeof AbortController !== 'undefined') {
+    controller = new AbortController();
+    requestOptions.signal = controller.signal;
+  }
+  const timeoutPromise = new Promise((_, reject) => {
+    timeoutId = setTimeout(() => {
+      if (controller) controller.abort();
+      reject(new Error('request_timeout'));
+    }, timeoutMs);
+  });
+  try {
+    return await Promise.race([fetch(url, requestOptions), timeoutPromise]);
+  } finally {
+    if (timeoutId !== null) clearTimeout(timeoutId);
+  }
+}
+
 async function haxApi(path, body) {
-  const response = await fetch(API_BASE_URL + path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+  let response;
+  try {
+    response = await fetchWithTimeout(API_BASE_URL + path, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+      cache: 'no-store'
+    }, 18000);
+  } catch (error) {
+    if (error && (error.name === 'AbortError' || error.message === 'request_timeout')) {
+      throw new Error('انتهت مهلة الاتصال بالخادم. تحقق من الإنترنت ثم حاول مجدداً.');
+    }
+    throw new Error('تعذر الاتصال بالخادم. تحقق من الإنترنت ثم حاول مجدداً.');
+  }
   const data = await response.json().catch(() => ({}));
   if (!response.ok) throw new Error(data.error || 'تعذر الاتصال بالخادم');
   return data;
@@ -18,9 +52,10 @@ let timerInterval = null;
 let currentLang = localStorage.getItem('hax_non_root_lang') || 'ar';
 
 let haxClientMaintenance = false;
+let loginInProgress = false;
 async function refreshClientMaintenance() {
   try {
-    const response = await fetch(API_BASE_URL + '/api/public/maintenance', { cache: 'no-store' });
+    const response = await fetchWithTimeout(API_BASE_URL + '/api/public/maintenance', { cache: 'no-store' }, 7000);
     if (!response.ok) return;
     const data = await response.json();
     haxClientMaintenance = !!(data.maintenance && data.maintenance.client);
@@ -192,9 +227,20 @@ function toggleDisplayKeyMask() {
 }
 
 async function login() {
+  if (loginInProgress) return;
   const key = document.getElementById('accessKey').value.trim().toUpperCase();
   if (!key) { showError(translations[currentLang].errEmpty); return; }
+
+  const button = document.querySelector('[data-hax-action="login"]');
+  loginInProgress = true;
+  if (button) {
+    button.disabled = true;
+    button.setAttribute('aria-busy', 'true');
+    button.textContent = translations[currentLang].checking;
+  }
+  document.getElementById('errorMsg').classList.remove('show');
   showToast(translations[currentLang].checking);
+
   try {
     const check = await haxApi('/api/check', { code: key });
     if (!check.valid) {
@@ -215,12 +261,20 @@ async function login() {
     if (!verified.happ_url || !verified.happ_url.startsWith('happ://crypt5/')) throw new Error('تعذر تجهيز رابط Happ المشفّر');
     const expiryTime = Date.parse(verified.expires_at || check.expires_at);
     const createdTime = Date.parse(check.created_at || Date.now());
-    if (!Number.isFinite(expiryTime) || expiryTime <= Date.now()) throw new Error('الكود منتهي الصلاحية');
+    if (!Number.isFinite(expiryTime) || expiryTime <= Date.now()) throw new Error('لم تصل مدة صلاحية الكود من الخادم. أعد المحاولة.');
     localStorage.setItem(STORAGE_KEY, JSON.stringify({ key, expiry: expiryTime, created: createdTime, deviceId, happUrl: verified.happ_url }));
     openDashboard(key, expiryTime, createdTime, verified.happ_url);
-  } catch(e) { showError(e.message || translations[currentLang].errConn); }
+  } catch(e) {
+    showError(e.message || translations[currentLang].errConn);
+  } finally {
+    loginInProgress = false;
+    if (button) {
+      button.disabled = false;
+      button.removeAttribute('aria-busy');
+      button.textContent = translations[currentLang].loginBtn;
+    }
+  }
 }
-
 async function getDeviceDetails() {
   const ua = navigator.userAgent || '';
   let model = '';
@@ -236,7 +290,10 @@ async function getDeviceDetails() {
 
   try {
     if (navigator.userAgentData?.getHighEntropyValues) {
-      const hints = await navigator.userAgentData.getHighEntropyValues(['model', 'platform']);
+      const hints = await Promise.race([
+        navigator.userAgentData.getHighEntropyValues(['model', 'platform']),
+        new Promise(resolve => setTimeout(() => resolve({}), 2500))
+      ]);
       model = String(hints.model || '').trim();
       platform = String(hints.platform || platform || '').trim();
     }
