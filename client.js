@@ -1,5 +1,6 @@
 
-const API_BASE_URL = 'https://haxreseller-production.up.railway.app';
+const API_BASE_URL = '/api-proxy.php';
+const apiUrl = path => API_BASE_URL + '?path=' + encodeURIComponent(path);
 const STORAGE_KEY = 'hax_non_root_client_access';
 const DEVICE_KEY = 'hax_non_root_device_id';
 let currentHappUrl = '';
@@ -32,7 +33,7 @@ async function fetchWithTimeout(url, options = {}, timeoutMs = 15000) {
 async function haxApi(path, body) {
   let response;
   try {
-    response = await fetchWithTimeout(API_BASE_URL + path, {
+    response = await fetchWithTimeout(apiUrl(path), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
@@ -55,7 +56,7 @@ let haxClientMaintenance = false;
 let loginInProgress = false;
 async function refreshClientMaintenance() {
   try {
-    const response = await fetchWithTimeout(API_BASE_URL + '/api/public/maintenance', { cache: 'no-store' }, 7000);
+    const response = await fetchWithTimeout(apiUrl('/api/public/maintenance'), { cache: 'no-store' }, 7000);
     if (!response.ok) return;
     const data = await response.json();
     haxClientMaintenance = !!(data.maintenance && data.maintenance.client);
