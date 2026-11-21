@@ -2,7 +2,7 @@
 const API_BASE_URL = 'https://haxreseller-production.up.railway.app';
 const STORAGE_KEY = 'hax_non_root_client_access';
 const DEVICE_KEY = 'hax_non_root_device_id';
-const HAPP_URL = 'happ://crypt5/fzvd7FMX5MVaitJzKEGMm4I623tAXv2EDmO1SlWXiDCiMYATEiGuFsZaJ5SaMpUd0KZ5uKiJCsFi3PDEfCo4QYygTY2qMWYNnfb+yZwukf19wMFag1kriKWeD4iRplufHESIDANebk66Epwv3TD0nW2p/yq2iPmMP2MQEUlP53yjRg+VgK7H3pOtnQad2VsYZHlPfNp8stqaWMYX7GKy7GgS7rRRqnTEPBT1wz2wmd1AcnBYGB666ABS3bPI9g4Y/QBPA8==HbunKovdipKAbAvVkctJ/j8rp97lFj/nUQnd3a0K6R9bQ+0dBGI06vhdQAQDMAek4JndLkDytv6NtP/isKlvCec1tdUH/NiZtHgcg5eI38lGU5+a+vezyS19qmnxt9R0dACNPAe349jz4C6heQUqmDMswpvNvKM6fN9ckJusiaJVWdNeDd2PopF76yxwyAxU5ECjgAqLfRJSy4mmHsJrxCajQxzMNgUY1tW/Ii0GXOaxV7PDt/x5l9ys/E+6cadehbsuQIHJiiO8vFltlmHmkGnVnkQnI3eZ7kG/c0PLZsXDve0b0MED3Tyi0cbCmpAQDPuYg98N9htrt+tXBh+amUtarWSf8t6ffpo8l6xrq3miNAB9rCSR37iCODb3/JNpFYKKaJHOaotLFoNTYHraqbyyo6A/FR1EsuhjflA+am/2D5tgdbgilw6p1RKlP5lfx+un2uvEjlZvsRzvifHK7bKL5d09cfCbnrISpI58ll2fpXbZqim3JTcip96/DGVG4r3SKmyeybEpOwL4nsXIQ02m/nCbVowh5pZ42mQAbX5H6/s1xcljGayPGALJnITeLuTmLf1Qf/9OiTVj+KZwB2CA0fzwhm6VcPm60OLpUKXLPX+xQH2spgeR7s97rfkdtxN6f7g+WGpS7DJLOR6QgCBg8xw332MQuAX/3l+wfoo=ff';
+let currentHappUrl = '';
 const getDeviceId = () => {
   let id = localStorage.getItem(DEVICE_KEY);
   if (!id) { id = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : 'hax-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2); localStorage.setItem(DEVICE_KEY, id); }
@@ -126,11 +126,12 @@ window.addEventListener('DOMContentLoaded', async () => {
     const deviceDetails = await getDeviceDetails();
     const verified = await haxApi('/api/verify', { code: parsed.key, device_id: parsed.deviceId, ...deviceDetails });
     if (!verified.valid) throw new Error(verified.reason || 'invalid_key');
+    if (!verified.happ_url || !verified.happ_url.startsWith('happ://crypt5/')) throw new Error('تعذر تجهيز رابط Happ المشفّر');
     const expiry = Date.parse(verified.expires_at || check.expires_at);
     const created = Date.parse(check.created_at || Date.now());
     if (!Number.isFinite(expiry) || expiry <= Date.now()) throw new Error('expired');
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ key: parsed.key, expiry, created, deviceId: parsed.deviceId }));
-    openDashboard(parsed.key, expiry, created);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ key: parsed.key, expiry, created, deviceId: parsed.deviceId, happUrl: verified.happ_url }));
+    openDashboard(parsed.key, expiry, created, verified.happ_url);
   } catch(e) { localStorage.removeItem(STORAGE_KEY); }
 });
 
@@ -208,13 +209,15 @@ async function login() {
     if (!verified.valid) {
       if (verified.reason === 'max_devices_reached') throw new Error('تم بلوغ الحد الأقصى للأجهزة لهذا الكود');
       if (verified.reason === 'maintenance') throw new Error('الخدمة تحت الصيانة حالياً');
+      if (verified.reason === 'happ_link_unavailable') throw new Error(verified.error || 'تعذر إنشاء رابط Happ المشفّر');
       throw new Error(translations[currentLang].errInvalid);
     }
+    if (!verified.happ_url || !verified.happ_url.startsWith('happ://crypt5/')) throw new Error('تعذر تجهيز رابط Happ المشفّر');
     const expiryTime = Date.parse(verified.expires_at || check.expires_at);
     const createdTime = Date.parse(check.created_at || Date.now());
     if (!Number.isFinite(expiryTime) || expiryTime <= Date.now()) throw new Error('الكود منتهي الصلاحية');
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ key, expiry: expiryTime, created: createdTime, deviceId }));
-    openDashboard(key, expiryTime, createdTime);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ key, expiry: expiryTime, created: createdTime, deviceId, happUrl: verified.happ_url }));
+    openDashboard(key, expiryTime, createdTime, verified.happ_url);
   } catch(e) { showError(e.message || translations[currentLang].errConn); }
 }
 
@@ -276,7 +279,8 @@ function detectDeviceLabel() {
   return 'غير معروف';
 }
 
-function openDashboard(key, expiry, created) {
+function openDashboard(key, expiry, created, happUrl) {
+  currentHappUrl = (typeof happUrl === 'string' && happUrl.startsWith('happ://crypt5/')) ? happUrl : '';
   document.getElementById('displayKey').textContent = key;
   document.getElementById('deviceOs').textContent = detectDeviceLabel();
   
@@ -381,6 +385,7 @@ function copyKey() {
 
 function logout() {
   if (timerInterval) clearInterval(timerInterval);
+  currentHappUrl = '';
   localStorage.removeItem(STORAGE_KEY);
   document.getElementById('dashView').classList.remove('active');
   document.getElementById('loginView').classList.add('active');
@@ -388,9 +393,13 @@ function logout() {
 }
 
 function launchVpnHub() {
+  if (!currentHappUrl || !currentHappUrl.startsWith('happ://crypt5/')) {
+    showError('رابط اشتراك Happ المشفّر غير متوفر. أعد التحقق من الكود.');
+    return;
+  }
   showToast(translations[currentLang].launching);
   setTimeout(() => {
-    window.location.href = HAPP_URL;
+    window.location.href = currentHappUrl;
   }, 1000);
 }
 
