@@ -462,45 +462,7 @@ function launchVpnHub() {
 }
 
 
-// Measure real round-trip latency to the HAX service health endpoint.
-// This reports server response time (ping), not download bandwidth.
-let haxLatencyTimer = null;
-let haxLatencyBusy = false;
-async function updateConnectionLatency() {
-  const el = document.getElementById('connectionLatency');
-  if (!el || haxLatencyBusy || document.visibilityState === 'hidden') return;
-  haxLatencyBusy = true;
-  const started = performance.now();
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 7000);
-  try {
-    await fetch(apiUrl('/health') + '&ping=' + Date.now(), {
-      method: 'GET',
-      cache: 'no-store',
-      signal: controller.signal
-    });
-    const elapsed = Math.max(1, Math.round(performance.now() - started));
-    el.textContent = elapsed + ' ms';
-    el.style.color = elapsed < 120 ? '#16d6a0' : elapsed < 300 ? '#ffbd59' : '#ff7185';
-    el.title = 'زمن الاستجابة إلى خادم HAX: ' + elapsed + ' مللي ثانية';
-  } catch (error) {
-    el.textContent = '— ms';
-    el.style.color = '#9ba8ba';
-    el.title = 'تعذر قياس زمن الاستجابة إلى الخادم';
-  } finally {
-    clearTimeout(timeout);
-    haxLatencyBusy = false;
-  }
-}
-function startConnectionLatencyMonitor() {
-  updateConnectionLatency();
-  if (haxLatencyTimer) clearInterval(haxLatencyTimer);
-  haxLatencyTimer = setInterval(updateConnectionLatency, 20000);
-}
-document.addEventListener('visibilitychange', () => {
-  if (document.visibilityState === 'visible') updateConnectionLatency();
-});
-
+// Connection latency polling removed to avoid repeated background health requests.
 
 document.addEventListener('click', event => {
   const control = event.target.closest('[data-hax-action], [data-hax-tab]');
@@ -521,4 +483,3 @@ document.addEventListener('click', event => {
   }
 });
 
-startConnectionLatencyMonitor();
