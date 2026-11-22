@@ -474,9 +474,8 @@ async function updateConnectionLatency() {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 7000);
   try {
-    await fetch(API_BASE_URL.replace(/\/+$/, '') + '/health?ping=' + Date.now(), {
+    await fetch(apiUrl('/health') + '&ping=' + Date.now(), {
       method: 'GET',
-      mode: 'no-cors',
       cache: 'no-store',
       signal: controller.signal
     });
