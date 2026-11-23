@@ -130,11 +130,10 @@ def create_keys():
     if not backend_ready(): return jsonify(error="أضف PROXY_URL وACCESS_KEY في متغيرات Railway الخاصة."),503
     if limited("create",12,60): return jsonify(error="تجاوزت عدد العمليات المسموح. حاول بعد دقيقة."),429
     data=request.get_json(silent=True) or {}
-    try: duration=int(data.get("durationSeconds",0)); quantity=int(data.get("quantity",1)); devices=int(data.get("deviceLimit",1))
+    try: duration=int(data.get("durationSeconds",0)); quantity=int(data.get("quantity",1)); username=str(data.get("username","User")).strip()[:80] or "User"
     except (ValueError,TypeError): return jsonify(error="قيم الطلب غير صحيحة."),400
     if not 1<=duration<=MAX_SECONDS: return jsonify(error="المدة يجب أن تكون بين ثانية واحدة وسنة."),400
     if not 1<=quantity<=20: return jsonify(error="عدد المفاتيح يجب أن يكون بين 1 و20."),400
-    if devices not in ALLOWED_DEVICES: return jsonify(error="حد الأجهزة غير مسموح."),400
     created=[]
     try:
         for _ in range(quantity):
@@ -143,7 +142,7 @@ def create_keys():
                 key=make_key()
                 if proxy_get(url_for_key(key)) is not None: continue
                 now=int(time.time()); expiry=(datetime.now(timezone.utc)+timedelta(seconds=duration)).strftime("%Y-%m-%d")
-                payload={"device_id":None,"device_ids":[],"max_devices":devices,"activated_at":0,"active":True,"expiry":duration,"created_by":"NACER_FAKE_DEVEL","created_at":now,"Banned":False,"DeviceLimit":devices,"Devices":{"dummy":0},"ExpiryDate":expiry,"Username":"NACER_FAKE_DEVEL"}
+                payload={"device_id":None,"device_ids":[],"max_devices":1,"activated_at":0,"active":True,"expiry":duration,"created_by":"BOT","created_at":now,"Banned":False,"DeviceLimit":1,"Devices":{"dummy":0},"ExpiryDate":expiry,"Username":username}
                 proxy_put(url_for_key(key),payload)
                 saved={"key":key,"durationLabel":label(duration),"durationSeconds":duration,"deviceLimit":devices,"expiryDate":expiry,"createdAt":now,"active":True,"banned":False}
                 break
