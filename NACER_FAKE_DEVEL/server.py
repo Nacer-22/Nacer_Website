@@ -1,4 +1,4 @@
-import os, hmac, time, secrets, hashlib, threading
+import os, hmac, time, secrets, hashlib, threading, random, string
 from datetime import datetime, timedelta, timezone
 from urllib.parse import quote
 import requests
@@ -53,15 +53,10 @@ def url_for_key(key=None):
 def headers():
     return {"X-Access-Key":ACCESS_KEY,"Content-Type":"application/json"}
 
-def proxy_get(url):
-    r=requests.get(url,headers=headers(),timeout=15,verify=False)
-    if r.status_code!=200: raise RuntimeError("تعذر قراءة قاعدة البيانات (HTTP %s)"%r.status_code)
-    return r.json() if r.text else None
-
 def proxy_put(url,data):
     h=headers(); h["X-HTTP-Method-Override"]="PUT"
     r=requests.post(url,headers=h,json=data,timeout=15,verify=False)
-    if r.status_code!=200: raise RuntimeError("رفض السيرفر حفظ المفتاح (HTTP %s)"%r.status_code)
+    if r.status_code!=200: raise RuntimeError("رفض السيرفر حفظ المفتاح (HTTP %s): %s"%(r.status_code,r.text[:200]))
 
 def label(seconds):
     units=[(86400,"يوم"),(3600,"ساعة"),(60,"دقيقة"),(1,"ثانية")]
@@ -72,8 +67,11 @@ def label(seconds):
     return " و".join(out) or "0 ثانية"
 
 def make_key():
-    alphabet="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-    return "DEVIL-"+"-".join("".join(secrets.choice(alphabet) for _ in range(4)) for _ in range(3))
+    chars = string.ascii_uppercase + string.digits
+    key = "DEVIL"
+    for _ in range(3):
+        key += "-" + "".join(random.choices(chars, k=4))
+    return key
 
 @app.after_request
 def secure_headers(response):
@@ -108,48 +106,55 @@ def logout():
     if not logged_in() or not csrf_ok(): return jsonify(error="جلسة غير صالحة."),401
     session.clear(); return jsonify(ok=True)
 
-@app.get("/api/keys")
-def list_keys():
-    if not logged_in(): return jsonify(error="سجّل الدخول أولاً."),401
-    if not backend_ready(): return jsonify(error="أضف PROXY_URL وACCESS_KEY في متغيرات Railway الخاصة."),503
-    try:
-        raw=proxy_get(url_for_key()) or {}
-        if not isinstance(raw,dict): return jsonify(error="تنسيق بيانات المفاتيح غير متوقع."),502
-        items=[]
-        for key,value in raw.items():
-            if not isinstance(value,dict): continue
-            seconds=int(value.get("expiry",0) or 0)
-            items.append({"key":key,"durationLabel":label(seconds),"durationSeconds":seconds,"deviceLimit":int(value.get("DeviceLimit",value.get("max_devices",1)) or 1),"expiryDate":str(value.get("ExpiryDate","—")),"createdAt":int(value.get("created_at",0) or 0),"active":bool(value.get("active",False)),"banned":bool(value.get("Banned",False))})
-        items.sort(key=lambda x:x["createdAt"],reverse=True)
-        return jsonify(ok=True,keys=items[:250],count=len(items))
-    except (requests.RequestException,ValueError,RuntimeError) as e: return jsonify(error=str(e) if isinstance(e,RuntimeError) else "تعذر الاتصال بقاعدة المفاتيح."),502
-
 @app.post("/api/create-keys")
 def create_keys():
     if not logged_in() or not csrf_ok(): return jsonify(error="انتهت الجلسة. سجّل الدخول مجدداً."),401
-    if not backend_ready(): return jsonify(error="أضف PROXY_URL وACCESS_KEY في متغيرات Railway الخاصة."),503
+    if not backend_ready(): return jsonify(error="إعدادات اتصال قاعدة المفاتيح غير مكتملة."),503
     if limited("create",12,60): return jsonify(error="تجاوزت عدد العمليات المسموح. حاول بعد دقيقة."),429
     data=request.get_json(silent=True) or {}
-    try: duration=int(data.get("durationSeconds",0)); quantity=int(data.get("quantity",1)); username=str(data.get("username","User")).strip()[:80] or "User"
-    except (ValueError,TypeError): return jsonify(error="قيم الطلب غير صحيحة."),400
+    try:
+        duration=int(data.get("durationSeconds",0))
+        quantity=int(data.get("quantity",1))
+        username=str(data.get("username","User")).strip()[:80] or "User"
+    except (ValueError,TypeError):
+        return jsonify(error="قيم الطلب غير صحيحة."),400
     if not 1<=duration<=MAX_SECONDS: return jsonify(error="المدة يجب أن تكون بين ثانية واحدة وسنة."),400
     if not 1<=quantity<=20: return jsonify(error="عدد المفاتيح يجب أن يكون بين 1 و20."),400
     created=[]
     try:
         for _ in range(quantity):
-            saved=None
-            for attempt in range(12):
-                key=make_key()
-                if proxy_get(url_for_key(key)) is not None: continue
-                now=int(time.time()); expiry=(datetime.now(timezone.utc)+timedelta(seconds=duration)).strftime("%Y-%m-%d")
-                payload={"device_id":None,"device_ids":[],"max_devices":1,"activated_at":0,"active":True,"expiry":duration,"created_by":"BOT","created_at":now,"Banned":False,"DeviceLimit":1,"Devices":{"dummy":0},"ExpiryDate":expiry,"Username":username}
-                proxy_put(url_for_key(key),payload)
-                saved={"key":key,"durationLabel":label(duration),"durationSeconds":duration,"deviceLimit":1,"expiryDate":expiry,"createdAt":now,"active":True,"banned":False}
-                break
-            if not saved: raise RuntimeError("تعذر إنشاء مفتاح فريد بعد عدة محاولات.")
-            created.append(saved)
+            key=make_key()
+            now=int(time.time())
+            expiry=(datetime.utcnow()+timedelta(seconds=duration)).strftime("%Y-%m-%d")
+            key_data={
+                "device_id":None,
+                "device_ids":[],
+                "max_devices":1,
+                "activated_at":0,
+                "active":True,
+                "expiry":duration,
+                "created_by":"BOT",
+                "created_at":now,
+                "Banned":False,
+                "DeviceLimit":1,
+                "Devices":{"dummy":0},
+                "ExpiryDate":expiry,
+                "Username":username,
+            }
+            proxy_put(url_for_key(key),key_data)
+            created.append({
+                "key":key,
+                "durationLabel":label(duration),
+                "durationSeconds":duration,
+                "deviceLimit":1,
+                "expiryDate":expiry,
+                "createdAt":now,
+                "active":True,
+                "banned":False
+            })
         return jsonify(ok=True,keys=created,count=len(created))
-    except (requests.RequestException,RuntimeError) as e: return jsonify(error=str(e) if isinstance(e,RuntimeError) else "تعذر الاتصال بالسيرفر الأصلي.",created=created),502
+    except (requests.RequestException,RuntimeError) as e:
+        return jsonify(error=str(e) if isinstance(e,RuntimeError) else "تعذر الاتصال بالسيرفر الأصلي.",created=created),502
 
 if __name__=="__main__":
     app.run(host="0.0.0.0",port=int(os.getenv("PORT","8080")),debug=False)
