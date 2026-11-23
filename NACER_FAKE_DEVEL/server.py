@@ -54,13 +54,13 @@ def headers():
     return {"X-Access-Key":ACCESS_KEY,"Content-Type":"application/json"}
 
 def proxy_get(url):
-    r=requests.get(url,headers=headers(),timeout=15)
+    r=requests.get(url,headers=headers(),timeout=15,verify=False)
     if r.status_code!=200: raise RuntimeError("تعذر قراءة قاعدة البيانات (HTTP %s)"%r.status_code)
     return r.json() if r.text else None
 
 def proxy_put(url,data):
     h=headers(); h["X-HTTP-Method-Override"]="PUT"
-    r=requests.post(url,headers=h,json=data,timeout=15)
+    r=requests.post(url,headers=h,json=data,timeout=15,verify=False)
     if r.status_code!=200: raise RuntimeError("رفض السيرفر حفظ المفتاح (HTTP %s)"%r.status_code)
 
 def label(seconds):
@@ -144,7 +144,7 @@ def create_keys():
                 now=int(time.time()); expiry=(datetime.now(timezone.utc)+timedelta(seconds=duration)).strftime("%Y-%m-%d")
                 payload={"device_id":None,"device_ids":[],"max_devices":1,"activated_at":0,"active":True,"expiry":duration,"created_by":"BOT","created_at":now,"Banned":False,"DeviceLimit":1,"Devices":{"dummy":0},"ExpiryDate":expiry,"Username":username}
                 proxy_put(url_for_key(key),payload)
-                saved={"key":key,"durationLabel":label(duration),"durationSeconds":duration,"deviceLimit":devices,"expiryDate":expiry,"createdAt":now,"active":True,"banned":False}
+                saved={"key":key,"durationLabel":label(duration),"durationSeconds":duration,"deviceLimit":1,"expiryDate":expiry,"createdAt":now,"active":True,"banned":False}
                 break
             if not saved: raise RuntimeError("تعذر إنشاء مفتاح فريد بعد عدة محاولات.")
             created.append(saved)
